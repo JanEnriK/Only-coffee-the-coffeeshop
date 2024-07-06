@@ -251,7 +251,21 @@ include "connect.php";
                         </thead>
                         <tbody>
                             <?php
-                            $sql_ordersActive = "SELECT SUM(quantity) as total_quantity, tblorderitem.* FROM `tblorderitem` WHERE status = 'ended' Group by orderid, DATE(date_time) Order by  Date(date_time) DESC, orderid DESC;";
+                            $sql_ordersActive = "SELECT 
+                                                    SUM(quantity) as total_quantity, 
+                                                    tblorderitem.* 
+                                                FROM 
+                                                    tblorderitem 
+                                                WHERE 
+                                                    status = 'ended' 
+                                                    AND DATE(date_time) BETWEEN DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND CURDATE()
+                                                GROUP BY 
+                                                    orderid, 
+                                                    DATE(date_time)
+                                                ORDER BY  
+                                                    DATE(date_time) DESC, 
+                                                    orderid DESC;
+                                                ";
                             $result_ordersActive = $conn->query($sql_ordersActive);
                             while ($row = $result_ordersActive->fetch_assoc()) :
 
@@ -277,6 +291,7 @@ include "connect.php";
                                     <td>
                                         <?= date('F j, Y h:iA', strtotime($row['date_time'])) ?>
                                     </td>
+
                                     <td>
                                         <button type="button" onclick="view('<?= $row['orderid'] ?>','<?= $row['date_time'] ?>','<?= $username['username'] ?>','<?= $row['total_quantity'] ?>','<?= $row['status'] ?>')">View</button>
                                     </td>
@@ -308,7 +323,21 @@ include "connect.php";
                     </thead>
                     <tbody>
                         <?php
-                        $sql_ordersActive = "SELECT SUM(quantity) as total_quantity, tblorderitem.* FROM `tblorderitem` WHERE status = 'completed' Group by orderid, DATE(date_time) Order by  Date(date_time) DESC, orderid DESC;";
+                        $sql_ordersActive = "SELECT 
+                                                SUM(quantity) as total_quantity, 
+                                                tblorderitem.* 
+                                            FROM 
+                                                tblorderitem 
+                                            WHERE 
+                                                status = 'completed' 
+                                                AND DATE(date_time) BETWEEN DATE_SUB(CURDATE(), INTERVAL 10 DAY) AND CURDATE()
+                                            GROUP BY 
+                                                orderid, 
+                                                DATE(date_time)
+                                            ORDER BY  
+                                                DATE(date_time) DESC, 
+                                                orderid DESC;
+";
                         $result_ordersActive = $conn->query($sql_ordersActive);
                         while ($row = $result_ordersActive->fetch_assoc()) :
 
@@ -397,20 +426,36 @@ include "connect.php";
             if (status == 'active') {
                 modalContent += `</table>
                             <div style="text-align:center;">
-                                <button type="submit" name="action" value="finish_${order_number}_${order_date}</td>
-                                                </tr>" class="finishbutton">Finish</button>
+                                <button type="submit" name="action" value="finish_${order_number}_${order_date}" class="finishbutton">Finish</button>
                                 <button type="submit" name="action" value="decline_${order_number}_${order_date}" class="cancelbutton">Cancel</button>
                             </div>
                             
                             `;
             } else if ((status == 'ended')) {
-                modalContent += `</table>
+
+                let options = {
+                    timeZone: 'Asia/Manila'
+                };
+                let today = new Date().toLocaleDateString('en-CA', options);
+                let orderDate = order_date;
+                let orderDateObj = new Date(orderDate);
+                let order_date_formated = orderDateObj.toLocaleDateString('en-CA', options);
+
+                if (order_date_formated < today) {
+                    modalContent += `</table>
                             <div style="text-align:center;">
-                                <button type="submit" name="reactivate" value="reactivate_${order_number}_${order_date}</td>
-                                                </tr>" class="finishbutton">Re-Activate</button>
+                                <button type="submit" title="Can't reactivate orders not made today" name="reactivate" value="reactivate_${order_number}_${order_date}" class="finishbutton" style="background-color:gray;" disabled>Re-Activate</button>
                             </div>
                             
                             `;
+                } else {
+                    modalContent += `</table>
+                            <div style="text-align:center;">
+                                <button type="submit" name="reactivate" value="reactivate_${order_number}_${order_date}" class="finishbutton">Re-Activate</button>
+                            </div>
+                            
+                            `;
+                }
             } else {
                 modalContent += `</table>`;
             }

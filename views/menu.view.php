@@ -595,16 +595,16 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
 
     //Expand view of a order history card
     function expandView(fullId, orderDate) {
-        console.log(typeof fullId);
         const orderNumber = fullId.split('_')[1];
         const counter = fullId.split('_')[2];
         const toggleButton = document.querySelector(`#btn_${orderNumber}_${counter}`);
         const orderDetailsContainer = document.getElementById(fullId);
 
         if (toggleButton.textContent === 'Expand View') {
-            // Expand view
+            console.log("Expanding view for order:", fullId); // Debugging log
             toggleButton.textContent = 'Contract';
             orderDetailsContainer.style.display = 'block'; // Show the content
+
             let url = `fetch_order_details.php?orderNumber=${orderNumber}&orderDate=${orderDate}`;
 
             fetch(url)
@@ -620,7 +620,7 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
                         overallTotal = overallTotal.toFixed(2);
 
                         // Calculate total discount and VAT for the entire order
-                        let totalDiscount = data.reduce((acc, item) => item.discount * 100, 0);
+                        let totalDiscount = data.reduce((acc, item) => acc + (item.discount * 100), 0);
                         let vatPercentage = data.reduce((acc, item) => item.VAT, 0);
                         let totalVAT = data.reduce((acc, item) => (item.VAT / 100) * overallTotal, 0);
                         overallTotal = overallTotal - (overallTotal * (totalDiscount / 100));
@@ -632,13 +632,114 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
                         } else if (status == "notpayed") {
                             status = "Pay at the store cashier.";
                         } else if (status == "canceled") {
-                            status = "Canceled.There was no payment for this order.";
+                            status = "Canceled. There was no payment made for this order.";
                         } else if (status == "declined") {
-                            status = "Online payment has been declined.";
+                            status = "Your online payment has been declined.";
+
                         } else {
-                            status = "Payed. Please pick up your order inside the store.";
+                            // Initialize status with "Paid. "
+                            status = "Paid. ";
+
+                            // Fetch preparation status only for "Paid" orders
+                            let urlPrep = `fetch_preparation_status.php?orderNumber=${orderNumber}&orderDate=${orderDate}`;
+                            return fetch(urlPrep)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Network response was not ok');
+                                    }
+                                    return response.json();
+                                })
+                                .then(statusFetched => {
+                                    if (Array.isArray(statusFetched) && statusFetched.length > 0) {
+                                        if (statusFetched[0].status == 'active') {
+                                            status += " Your order is on preparation you can pick it up on the store.";
+                                        } else if (statusFetched[0].status == 'completed') {
+                                            status += " Your order is completed.";
+                                        } else {
+                                            status += " Order closed. You didn't pick up your order.";
+                                        }
+                                    } else {
+                                        status += " Order status not available.";
+                                    }
+
+                                    // Format the initial orderDate for display
+                                    const options = {
+                                        weekday: 'long',
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: 'numeric',
+                                        minute: 'numeric',
+                                        hour12: true
+                                    };
+                                    let formattedOrderDate = new Date(orderDate).toLocaleString('en-US', options);
+
+                                    // Generate table rows and other details
+                                    let details = `<table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Items</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.map(item => `
+                                        <tr>
+                                            <td>${item.product_name}</td>
+                                            <td>₱ ${parseFloat(item.price).toFixed(2)}</td>
+                                            <td>${item.quantity}</td>
+                                            <td>₱ ${(parseFloat(item.quantity) * parseFloat(item.price)).toFixed(2)}</td>
+                                        </tr>`).join('')}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3" style="text-align:right;"> Discount: </th>
+                                        <td>${totalDiscount}%</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3" style="text-align:right;"> VAT Percentage: </th>
+                                        <td>${vatPercentage}%</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3" style="text-align:right;"> Calculated VAT: </th>
+                                        <td>₱ ${totalVAT.toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3" style="text-align:right;">Grand Total: </th>
+                                        <td>₱ ${overallTotal}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <h6 id="status_${orderNumber}_${counter}"><b>Status:</b> ${status}</h6> <!-- Use the updated status here -->
+                            <h6><b>Order Date:</b> ${formattedOrderDate}</h6>
+                            <button type="button" class="btn btn-secondary mb-2 ml-auto d-flex" onclick="downloadIMG(${orderNumber})"><i class="bi bi-download"></i></button>`;
+                                    console.log(details);
+                                    orderDetailsContainer.innerHTML = details; // This line adds the status element to the DOM
+
+                                    // Now that the element is in the DOM, you can safely access and update it if needed
+                                    const statusElement = document.getElementById(`status_${orderNumber}_${counter}`);
+                                    if (statusElement) {
+                                        statusElement.innerHTML = `<b>Status:</b> ${status}`; // This line is now safe to execute
+                                    } else {
+                                        console.error(`Status element status_${orderNumber}_${counter} not found in DOM.`);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching order status:', error);
+                                    status += " Error fetching order status.";
+
+                                    // Update the status element in the DOM if found
+                                    const statusElement = document.getElementById(`status_${orderNumber}_${counter}`);
+                                    if (statusElement) {
+                                        statusElement.innerHTML = `<b>Status:</b> ${status}`;
+                                    } else {
+                                        console.error(`Status element status_${orderNumber}_${counter} not found in DOM.`);
+                                    }
+                                });
                         }
-                        let orderDate = new Date(data[0].order_datetime);
+                        // Format the initial orderDate for display
                         const options = {
                             weekday: 'long',
                             year: 'numeric',
@@ -648,64 +749,75 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
                             minute: 'numeric',
                             hour12: true
                         };
-                        orderDate = orderDate.toLocaleString('en-US', options);
-                        // Generate table rows
+                        let formattedOrderDate = new Date(orderDate).toLocaleString('en-US', options);
+
+                        // Generate table rows and other details
                         let details = `<table class="table table-sm table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Items</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${data.map(item => `
-                            <tr>
-                                <td>${item.product_name}</td>
-                                <td>₱ ${parseFloat(item.price).toFixed(2)}</td>
-                                <td>${item.quantity}</td>
-                                <td>₱ ${(parseFloat(item.quantity) * parseFloat(item.price)).toFixed(2)}</td>
-                            </tr>`).join('')}
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colspan="3" style="text-align:right;"> Discount: </th>
-                                <td>${totalDiscount}%</td>
-                            </tr>
-                            <tr>
-                                <th colspan="3" style="text-align:right;"> VAT Percentage: </th>
-                                <td>${vatPercentage}%</td>
-                            </tr>
-                            <tr>
-                                <th colspan="3" style="text-align:right;"> Calculated VAT: </th>
-                                <td>₱ ${totalVAT.toFixed(2)}</td>
-                            </tr>
-                            <tr>
-                                <th colspan="3" style="text-align:right;">Grand Total: </th>
-                                <td>₱ ${overallTotal}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                    <h6><b>Status:</b> ${status}</h6>
-                    <h6><b>Order Date:</b> ${orderDate}</h6>
-                    <button type="button" class="btn btn-secondary mb-2 ml-auto d-flex" onclick="downloadIMG(${orderNumber})"><i class="bi bi-download"></i></button>`;
-                        orderDetailsContainer.innerHTML = details;
+                                <thead>
+                                    <tr>
+                                        <th>Items</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.map(item => `
+                                        <tr>
+                                            <td>${item.product_name}</td>
+                                            <td>₱ ${parseFloat(item.price).toFixed(2)}</td>
+                                            <td>${item.quantity}</td>
+                                            <td>₱ ${(parseFloat(item.quantity) * parseFloat(item.price)).toFixed(2)}</td>
+                                        </tr>`).join('')}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3" style="text-align:right;"> Discount: </th>
+                                        <td>${totalDiscount}%</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3" style="text-align:right;"> VAT Percentage: </th>
+                                        <td>${vatPercentage}%</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3" style="text-align:right;"> Calculated VAT: </th>
+                                        <td>₱ ${totalVAT.toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="3" style="text-align:right;">Grand Total: </th>
+                                        <td>₱ ${overallTotal}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <h6 id="status_${orderNumber}_${counter}"><b>Status:</b> ${status}</h6> <!-- Use the updated status here -->
+                            <h6><b>Order Date:</b> ${formattedOrderDate}</h6>
+                            <button type="button" class="btn btn-secondary mb-2 ml-auto d-flex" onclick="downloadIMG(${orderNumber})"><i class="bi bi-download"></i></button>`;
+                        console.log(details);
+                        orderDetailsContainer.innerHTML = details; // This line adds the status element to the DOM
+
+                        // Now that the element is in the DOM, you can safely access and update it if needed
+                        const statusElement = document.getElementById(`status_${orderNumber}_${counter}`);
+                        if (statusElement) {
+                            statusElement.innerHTML = `<b>Status:</b> ${status}`; // This line is now safe to execute
+                        } else {
+                            console.error(`Status element status_${orderNumber}_${counter} not found in DOM.`);
+                        }
+
                     } else {
                         console.error('No order details found');
-                        console.log('No order details found');
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching order details:', error);
-                    console.log('Error fetching order details:', error);
                 });
         } else {
-            // Contract view
+            console.log("Contracting view for order:", fullId); // Debugging log
             toggleButton.textContent = 'Expand View';
             orderDetailsContainer.style.display = 'none'; // Hide the content
         }
     }
+
+
 
 
     //validate discount code entered
