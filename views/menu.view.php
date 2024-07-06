@@ -143,96 +143,98 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
         margin: 0 10px;
         /* Add some margin between the input field and buttons */
     }
+
+    .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        /* Make sure the card can grow to fill the container */
+    }
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        /* Pushes the button to the bottom */
+        flex-grow: 1;
+        /* Allows the card-body to grow and fill the available space */
+    }
+
+    .card-img-top {
+        width: 100%;
+        height: 200px;
+        /* Fixed height for images */
+        object-fit: cover;
+        /* Ensure images cover the area without stretching */
+    }
+
+    /* Optional: Style for disabled links */
+    .disabled {
+        opacity: 0.65;
+        pointer-events: none;
+    }
 </style>
 
 
 
 <!-- Page Header Start -->
-<div class="container-fluid page-header mb-5 position-relative overlay-bottom">
-    <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
-        <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">Menu</h1>
+<div class="container-fluid page-header mb-3 position-relative overlay-bottom">
+    <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 100px">
     </div>
 </div>
 <!-- Page Header End -->
 
 <!-- Menu Start -->
-<div id="product-container" class="container-fluid pt-5">
+<div id="product-container" class="container-fluid">
     <div class="container" id="product-list">
-        <div class="section-title">
+        <div class="text-center">
             <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">Menu & Pricing</h4>
             <h1 class="display-4">Competitive Pricing</h1>
 
             <div class="dashboard">
                 <div class="content">
-                    <div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Product Name</th>
-                                    <th>Product Description</th>
-                                    <th>Price</th>
-                                    <th>Status</th>
-                                    <th>Image</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbl_body">
-
-                            </tbody>
-                        </table>
+                    <div class="row" id="productContainer">
+                        <!-- Products will be inserted here -->
                     </div>
                 </div>
             </div>
-
             <script>
                 // Fetch product data from the backend
                 fetch('/get_products')
                     .then(response => response.json())
                     .then(products => {
-                        const productContainer = document.getElementById('tbl_body');
+                        const productContainer = document.getElementById('productContainer');
 
-                        // Loop through the products and display them
+                        // Loop through the products and display them as cards
                         products.forEach(product => {
-                            const productCard = document.createElement('tr');
-                            // productCard.className = 'col-lg-4 col-md-6 mb-5';
-                            // productCard.innerHTML = `
-                            //                         <td><a href =/show_product?id=${product.product_id}>${product.product_name}</a></td>
-                            //                         <td>${product.product_description}</td>
-                            //                         <td>${product.price}</td>
-                            //                         <td>${product.status}</td>
-                            //                         <td><img height="100px" src="uploads/${product.image}" alt="${product.product_name}"></td>
-                            //                     `;
-
-
-                            if (product.status === "Available") {
-                                // If the product is available, enable the link
-                                productCard.innerHTML = `
-                                <td><a href="/show_product?id=${product.product_id}">${product.product_name}</a></td>
-                                <td>${product.product_description}</td>
-                                <td>${product.price}</td>
-                                <td>${product.status}</td>
-                                <td><img height="100px" src="uploads/${product.image}" alt="${product.product_name}"></td>
-                            `;
-                            } else if (product.status === "Not Available") {
-                                // If the product is not available, disable the link
-                                productCard.innerHTML = `
-                                <td><a style="color:#878787;" disabled>${product.product_name}</a></td>
-                                <td>${product.product_description}</td>
-                                <td>${product.price}</td>
-                                <td>${product.status}</td>
-                                <td><img height="100px" src="uploads/${product.image}" alt="${product.product_name}"></td>
-                            `;
-                            } else {
-                                //display null products
+                            let viewProductLink = `<a href="/show_product?id=${product.product_id}" class="btn btn-primary btn-block">View Product</a>`;
+                            if (product.status !== "Available") {
+                                // If the product is not available, make the link unclickable and visually disabled
+                                viewProductLink = `<a href="#" class="btn btn-primary btn-block disabled">View Product</a>`;
                             }
-                            productContainer.appendChild(productCard);
+                            const productCard = document.createElement('div');
+                            productCard.className = 'col-lg-3 col-md-6 col-sm-12 mb-4'; // Adjust grid classes as needed
+
+                            productCard.innerHTML = `
+                <div class="card h-100 rounded"> <!-- Ensure the card takes full height -->
+                    <img src="uploads/${product.image}" class="card-img-top rounded-top" alt="${product.product_name}" style="height: 200px; object-fit: cover;">
+                    <div class="card-body ">
+                        <h5 class="card-title">${product.product_name}</h5>
+                        <p class="card-text">${product.product_description}</p>
+                        <p class="card-text"><small class="text-muted">₱ ${product.price}</small>
+                        <p class="card-text"><small class="text-muted">${product.status}</small><br>
+                        ${viewProductLink}
+                    </div>
+                </div>
+            `;
+
                             productContainer.appendChild(productCard);
                         });
                     })
                     .catch(error => console.error('Error:', error));
             </script>
+
         </div>
-
-
     </div>
 </div>
 
@@ -512,6 +514,7 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
 
         html2canvas(element, {
             onrendered: function(canvas) {
+
                 var link = document.createElement('a');
                 link.download = 'order_' + orderNumber + '.jpg'; // Specify the file extension as.jpg
                 link.href = canvas.toDataURL("image/jpeg", 0.9); // Convert to JPEG with 90% quality
@@ -550,6 +553,7 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
                 return response.json();
             })
             .then(data => {
+                let counter = 1;
                 let html = data.map(order => {
                     // Convert the order datetime to a Date object
                     let orderDate = new Date(order.order_datetime);
@@ -563,7 +567,8 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
                         minute: 'numeric', // 14
                         hour12: true, // Use 12-hour clock
                     });
-
+                    counter++;
+                    let fullId = `items_${order.order_number}_${counter}`;
                     return `
                             <div class="col-md-12">
                                 <div class="card mb-3 rounded">
@@ -572,8 +577,8 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
                                         <h5 class="card-title pl-lg-2">Order Number: ${order.order_number}</h5>
                                         <h5 class="card-title pl-lg-2 pr-lg-2">No. of Items: ${order.record_count}</h5></span>
                                         <h6 class="card-title pl-lg-2"><b>Date Ordered:</b> ${formattedDate}</h6>
-                                        <div id="items_${order.order_number}" style="display:none;"></div>
-                                        <button type="button" id="btn_${order.order_number}" class="btn btn-primary btn-block" onclick="expandView(${order.order_number}, '${order.order_datetime}')">Expand View</button>
+                                        <div id="${fullId}" style="display:none;"></div>
+                                        <button type="button" id="btn_${order.order_number}_${counter}" class="btn btn-primary btn-block" onclick="expandView('items_${order.order_number}_${counter}', '${order.order_datetime}')">Expand View</button>
                                         <!-- Add more details as per your data structure -->
                                     </div>
                                 </div>
@@ -589,9 +594,12 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
     }
 
     //Expand view of a order history card
-    function expandView(orderNumber, orderDate) {
-        const toggleButton = document.querySelector(`#btn_${orderNumber}`);
-        const orderDetailsContainer = document.getElementById(`items_${orderNumber}`);
+    function expandView(fullId, orderDate) {
+        console.log(typeof fullId);
+        const orderNumber = fullId.split('_')[1];
+        const counter = fullId.split('_')[2];
+        const toggleButton = document.querySelector(`#btn_${orderNumber}_${counter}`);
+        const orderDetailsContainer = document.getElementById(fullId);
 
         if (toggleButton.textContent === 'Expand View') {
             // Expand view
@@ -625,6 +633,8 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
                             status = "Pay at the store cashier.";
                         } else if (status == "canceled") {
                             status = "Canceled.There was no payment for this order.";
+                        } else if (status == "declined") {
+                            status = "Online payment has been declined.";
                         } else {
                             status = "Payed. Please pick up your order inside the store.";
                         }
@@ -683,10 +693,12 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
                         orderDetailsContainer.innerHTML = details;
                     } else {
                         console.error('No order details found');
+                        console.log('No order details found');
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching order details:', error);
+                    console.log('Error fetching order details:', error);
                 });
         } else {
             // Contract view

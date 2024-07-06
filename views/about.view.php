@@ -2,14 +2,14 @@
 <?php require "partials/nav.php"; ?>
 
 <!-- Page Header Start -->
-<div class="container-fluid page-header mb-5 position-relative overlay-bottom">
-    <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
-        <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">About Us</h1>
+<div class="container-fluid page-header mb-3 position-relative overlay-bottom">
+    <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 100px">
+        <!-- <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">About Us</h1>
         <div class="d-inline-flex mb-lg-5">
             <p class="m-0 text-white"><a class="text-white" href="">Home</a></p>
             <p class="m-0 text-white px-2">/</p>
             <p class="m-0 text-white">About Us</p>
-        </div>
+        </div> -->
     </div>
 </div>
 <!-- Page Header End -->
@@ -18,14 +18,14 @@
 <!-- About Start -->
 <div class="container-fluid py-5">
     <div class="container">
-        <div class="section-title">
+        <div class="text-center">
             <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">About Us</h4>
-            <h1 class="display-4">Serving Since 2023</h1>
+            <h1 class="display-4">Serving Since <?= date('Y', strtotime($coffee['date_established'])) ?></h1>
         </div>
         <div class="row">
             <div class="col-lg-4 py-0 py-lg-5">
                 <h1 class="mb-3">Our Tagline</h1>
-                <p class="mb-3 text-justify">&emsp;&emsp;&emsp;Step into 'Only Coffee', where every brew is a study buddy and every sip fuels your university journey. Embrace the aroma of academia as you indulge in our meticulously crafted blends, the perfect companions for your academic pursuits. Join us at the intersection of caffeine and campus life, where 'Only Coffee' means endless possibilities.</p>
+                <p class="mb-3 text-justify" style="text-indent: 2em;"><?= $coffee['tagline'] ?></p>
                 <!-- <a href="" class="btn btn-secondary font-weight-bold py-2 px-4 mt-2 ">Learn More</a> -->
             </div>
             <div class="col-lg-4 py-5 py-lg-0" style="min-height: 500px;">
@@ -35,10 +35,9 @@
             </div>
             <div class="col-lg-4 py-0 py-lg-5">
                 <h1 class="mb-3">Our Vision</h1>
-                <p>Vision Placeholder</p>
-                <h5 class="mb-3"><i class="fa fa-check text-primary mr-3"></i>Serve the Best Tasting Coffee</h5>
-                <h5 class="mb-3"><i class="fa fa-check text-primary mr-3"></i>Home of Caffeine Addict Students</h5>
-                <h5 class="mb-3"><i class="fa fa-check text-primary mr-3"></i>Provide Fast Service</h5>
+                <?php foreach (json_decode($coffee['vision']) as $visions) : ?>
+                    <h5 class="mb-3"><i class="fa fa-check text-primary mr-3"></i><?= $visions ?></h5>
+                <?php endforeach ?>
                 <!-- <a href="" class="btn btn-primary font-weight-bold py-2 px-4 mt-2">Learn More</a> -->
             </div>
         </div>

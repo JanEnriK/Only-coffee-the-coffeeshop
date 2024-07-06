@@ -70,14 +70,20 @@ if ($paymentMethod === "cash") {
         'customer_id' => $employeeID,
         'order_number' => $order_number,
     ]);
+
+    date_default_timezone_set('Asia/Manila');
+    // Get today's date in the format YYYY-MM-DD
+    $today = date('Y-m-d');
+
     //pass the order to order items for preparation
-    $orderedItems = $db->query("SELECT * FROM tblorders JOIN tblproducts ON base_coffee_id = product_id WHERE order_status = 'payed' AND order_number = ?;", [$order_number])->get();
+    $orderedItems = $db->query("SELECT * FROM tblorders JOIN tblproducts ON base_coffee_id = product_id WHERE order_status = 'payed' AND order_number = ? and DATE(order_datetime) = ?;", [$order_number, $today])->get();
     foreach ($orderedItems as $items) {
-        $db->query("INSERT INTO tblorderitem(quantity, status, orderid, productid) VALUES(:quantity, :status, :orderid, :productid)", [
+        $db->query("INSERT INTO tblorderitem(quantity, status, orderid, productid, customerid) VALUES(:quantity, :status, :orderid, :productid,:customerid)", [
             'quantity' => $items['quantity'],
             'status' => "active",
             'orderid' => $order_number,
             'productid' => $items['product_id'],
+            'customerid' => $employeeID,
         ]);
     }
 } else {
@@ -90,14 +96,19 @@ if ($paymentMethod === "cash") {
         'reference_no' => $paymentOnline,
     ]);
 
+    date_default_timezone_set('Asia/Manila');
+    // Get today's date in the format YYYY-MM-DD
+    $today = date('Y-m-d');
+
     //pass the order to order items for preparation
-    $orderedItems = $db->query("SELECT * FROM tblorders JOIN tblproducts ON base_coffee_id = product_id WHERE order_status = 'payed' AND order_number = ?;", [$order_number])->get();
+    $orderedItems = $db->query("SELECT * FROM tblorders JOIN tblproducts ON base_coffee_id = product_id WHERE order_status = 'payed' AND order_number = ? AND DATE(order_datetime) = ?;", [$order_number, $today])->get();
     foreach ($orderedItems as $items) {
-        $db->query("INSERT INTO tblorderitem(quantity, status, orderid, productid) VALUES(:quantity, :status, :orderid, :productid)", [
+        $db->query("INSERT INTO tblorderitem(quantity, status, orderid, productid,customerid) VALUES(:quantity, :status, :orderid, :productid, :customerid)", [
             'quantity' => $items['quantity'],
             'status' => "active",
             'orderid' => $order_number,
             'productid' => $items['product_id'],
+            'customerid' => $employeeID,
         ]);
     }
 }

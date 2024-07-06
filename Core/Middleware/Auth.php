@@ -1,17 +1,14 @@
-<?php 
+<?php
 
 namespace Core\Middleware;
 
-class Auth 
+class Auth
 {
-  public function handle() 
+  public function handle()
   {
-    if (! $_SESSION['user'] ?? false) 
-    {
-      header('location: /');
+    if (!$_SESSION['user'] ?? false) {
+      header('location: /login');
       die();
     }
   }
 }
-
-?>

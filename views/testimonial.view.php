@@ -1,15 +1,17 @@
 <?php require 'partials/head.php'; ?>
 <?php require 'partials/nav.php'; ?>
-
+<style>
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex-grow: 1;
+    }
+</style>
 <!-- Page Header Start -->
 <div class="container-fluid page-header mb-5 position-relative overlay-bottom">
-    <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
-        <h1 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase">Testimonial</h1>
-        <div class="d-inline-flex mb-lg-5">
-            <p class="m-0 text-white"><a class="text-white" href="">Home</a></p>
-            <p class="m-0 text-white px-2">/</p>
-            <p class="m-0 text-white">Testimonial</p>
-        </div>
+    <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 100px">
+
     </div>
 </div>
 <!-- Page Header End -->
@@ -30,10 +32,9 @@
                             <h1 class="text-white">Tell us About your Experience</h1>
                         </div>
                         <ul class="list-inline text-white m-0">
-                            <li class="py-2"><i class="fa fa-check text-primary mr-3"></i>Serve the Best Tasting Coffee</li>
-                            <li class="py-2"><i class="fa fa-check text-primary mr-3"></i>Home of Caffeine Addict </li>
-                            <li class="py-2"><i class="fa fa-check text-primary mr-3"></i>Provide Fast Service</li>
-                        </ul>
+                            <?php foreach (json_decode($coffee['vision']) as $visions) : ?>
+                                <li class="py-2"><i class="fa fa-check text-primary mr-3"></i><?= $visions ?></li>
+                            <?php endforeach ?>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -60,25 +61,24 @@
 <!-- Reservation End -->
 
 <!-- Testimonial Start -->
-<div class="container-fluid py-5">
+<div class="container-fluid py-5 bg-light">
     <div class="container">
-        <div class="section-title">
-            <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">Testimonial</h4>
-            <h1 class="display-4">Our Clients Say</h1>
+        <div class="text-center">
+            <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">Testimonials</h4>
+            <h1 class="display-4">Our Clients Says!</h1>
         </div>
         <div class="owl-carousel testimonial-carousel">
 
             <?php foreach ($feedback as $fback) : ?>
 
-                <div class="testimonial-item">
+                <div class="testimonial-item card-body">
                     <div class="d-flex align-items-center mb-3">
-                        <img class="img-fluid" src="img/testimonial-1.jpg" alt="">
-                        <div class="ml-3">
-                            <h4><?= $fback['firstname'] ?></h4>
-                            <i><?= $fback['username'] ?></i>
+                        <div class="ml-3 text-center">
+                            <h4 style="text-transform: capitalize;"><?= $fback['title'] ?></h4>
+                            <p class="m-0" style="padding-right:20px">"<?= $fback['feedback_desc'] ?>"</p>
+                            <p class="m-0 text-left font-weight-bold" style="text-transform: capitalize;">- <?= $fback['firstname'] ?></p>
                         </div>
                     </div>
-                    <p class="m-0" style="padding-right:20px"><?= $fback['feedback_desc'] ?></p>
                 </div>
 
             <?php endforeach; ?>
@@ -107,7 +107,23 @@
 
 <script>
     $(document).ready(function() {
-        $(".owl-carousel").owlCarousel();
+        $(".owl-carousel").owlCarousel({
+            loop: true,
+            margin: 10,
+            nav: false,
+            dots: false,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 2
+                },
+                1000: {
+                    items: 3
+                }
+            }
+        });
     });
 </script>
 

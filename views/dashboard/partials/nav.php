@@ -1,6 +1,15 @@
+<?php
+
+use Core\App;
+use Core\Database;
+
+$db = App::resolve('Core\Database');
+$coffee_data = $db->query("SELECT * FROM tblcoffeeshop")->find();
+?>
 <!-- Navbar Start -->
+
 <div class="sidebar">
-    <h1>COFFEE SHOP</h1>
+    <h1><?= strtoupper($coffee_data['shopname']) ?></h1>
     <ul>
         <li><a href="/admin_dashboard"><i class="fa fa-home"></i> Home</a></li>
         <li><a href="/admin_dashboard/info"><i class="fa fa-coffee"></i> Coffee Shop</a></li>

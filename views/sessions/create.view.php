@@ -44,13 +44,13 @@ if (isset($_SESSION['signupSuccess']) && $_SESSION['signupSuccess'] === true) {
                 <div class="col-lg-6 my-5 my-lg-0">
                     <div class="p-5">
                         <div class="mb-4">
-                            <h1 class="display-3 text-primary">We Listen!</h1>
-                            <h1 class="text-white">Tell us About your Experience</h1>
+                            <h1 class="display-3 text-primary">Come Log in!</h1>
+                            <h1 class="text-white">To see amazing products offered</h1>
                         </div>
                         <ul class="list-inline text-white m-0">
-                            <li class="py-2"><i class="fa fa-check text-primary mr-3"></i>Serve the Best Tasting Coffee</li>
-                            <li class="py-2"><i class="fa fa-check text-primary mr-3"></i>Home of Caffeine Addict </li>
-                            <li class="py-2"><i class="fa fa-check text-primary mr-3"></i>Provide Fast Service</li>
+                            <?php foreach (json_decode($coffee['vision']) as $visions) : ?>
+                                <li class="py-2"><i class="fa fa-check text-primary mr-3"></i><?= $visions ?></li>
+                            <?php endforeach ?>
                         </ul>
                     </div>
                 </div>
@@ -80,8 +80,6 @@ if (isset($_SESSION['signupSuccess']) && $_SESSION['signupSuccess'] === true) {
                                 <button class="btn btn-primary btn-block font-weight-bold py-3" type="submit">Sign In</button>
                             </div>
                         </form>
-                        <!-- Link to Forgot Password -->
-                        <p class="text-white"><a href="/forgot-password">Forgot your password?</a></p>
                     </div>
                 </div>
             </div>

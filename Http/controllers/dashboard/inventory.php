@@ -6,6 +6,105 @@ $statement = $pdo->prepare($sql);
 $statement->execute();
 $productsData = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+//remove zero quantity records
+function removeZeroQuantity($pdo)
+{
+    $sqlInventoryItems = "SELECT * FROM tblinventoryitems";
+    $statementInventoryItems = $pdo->prepare($sqlInventoryItems);
+    $statementInventoryItems->execute();
+    $inventoryitemsData = $statementInventoryItems->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($inventoryitemsData as $data) {
+        if ($data['quantity'] <= 0) {
+            $deleteSql = "DELETE FROM tblinventoryitems WHERE tblinventoryitems_id = :inventory_id";
+            $deleteStatement = $pdo->prepare($deleteSql);
+            $deleteStatement->bindParam(':inventory_id', $data['tblinventoryitems_id']);
+            $deleteStatement->execute();
+        }
+    }
+}
+removeZeroQuantity($pdo);
+
+
+//remove expired items
+function removeExpired($pdo)
+{
+    $sqlInventoryItems = "SELECT * FROM tblinventoryitems";
+    $statementInventoryItems = $pdo->prepare($sqlInventoryItems);
+    $statementInventoryItems->execute();
+    $inventoryitemsData = $statementInventoryItems->fetchAll(PDO::FETCH_ASSOC);
+
+    $today = new DateTime('now', new DateTimeZone('Asia/Manila'));
+    $today = $today->format('Y-m-d');
+    error_log("date today: $today");
+
+    foreach ($inventoryitemsData as $data) {
+        $expirationDate = $data['expiration_date'];
+        error_log("expiration: " . $expirationDate);
+        if ($expirationDate <= $today) {
+            // The item is expired, delete it
+            $deleteSql = "DELETE FROM tblinventoryitems WHERE tblinventoryitems_id = :inventory_id AND expiration_date = :expiration_date";
+            $deleteStatement = $pdo->prepare($deleteSql);
+            $deleteStatement->bindParam(':inventory_id', $data['tblinventoryitems_id']);
+            $deleteStatement->bindParam(':expiration_date', $data['expiration_date']);
+            $deleteStatement->execute();
+
+            $sqlInventory = "SELECT inventory_item, unit FROM tblinventory WHERE inventory_id = :inventory_id";
+            $statementInventory = $pdo->prepare($sqlInventory);
+            $statementInventory->bindParam(':inventory_id', $data['inventory_id']);
+            $statementInventory->execute();
+            $inventoryData = $statementInventory->fetch(PDO::FETCH_ASSOC);
+
+            $reason = "auto deduct " . $data['quantity'] . " for expired " . $inventoryData['inventory_item'];
+            $recordType = "Expiration Auto Deduct";
+            $quantityNegative = '-' . $data['quantity'];
+
+            $sqlInsertReport = "INSERT INTO tblinventoryreport (inventory_item, inventory_id, quantity, unit, record_type, reason) VALUES (:inventoryItem, :inventory_id, :quantity, :unit, :record_type, :reason)";
+            $statementInsertReport = $pdo->prepare($sqlInsertReport);
+            $statementInsertReport->bindParam(':inventoryItem',  $inventoryData['inventory_item']);
+            $statementInsertReport->bindParam(':inventory_id', $data['inventory_id']);
+            $statementInsertReport->bindParam(':quantity', $quantityNegative);
+            $statementInsertReport->bindParam(':unit', $inventoryData['unit']);
+            $statementInsertReport->bindParam(':reason', $reason);
+            $statementInsertReport->bindParam(':record_type', $recordType);
+            $statementInsertReport->execute();
+        }
+    }
+}
+removeExpired($pdo);
+
+//function for recalculating inventory quantity
+function recalculateInventoryQuantity($pdo)
+{
+    // Fetch data from tblinventory
+    $sql = "SELECT * FROM tblinventory";
+    $statement = $pdo->prepare($sql);
+    $statement->execute();
+    $inventoryData = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($inventoryData as $inventory) {
+        $inventoryQuantity = 0;
+
+        $sqlInventoryItems = "SELECT * FROM tblinventoryitems WHERE inventory_id = :inventory_id";
+        $statementInventoryItems = $pdo->prepare($sqlInventoryItems);
+        $statementInventoryItems->bindParam(':inventory_id', $inventory['inventory_id']);
+        $statementInventoryItems->execute();
+        $inventoryitemsData = $statementInventoryItems->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($inventoryitemsData as $quantity) {
+            $inventoryQuantity = $inventoryQuantity + $quantity['quantity'];
+        }
+
+        $sqlChangeQuantity = "UPDATE tblinventory SET quantity = :inventoryQuantity WHERE inventory_id = :inventory_id";
+        $changeQuantity = $pdo->prepare($sqlChangeQuantity);
+        $changeQuantity->bindParam(':inventoryQuantity', $inventoryQuantity);
+        $changeQuantity->bindParam(':inventory_id', $inventory['inventory_id']);
+        $changeQuantity->execute();
+    }
+}
+
+recalculateInventoryQuantity($pdo);
+
 function recalculateStatus($pdo, $productsData)
 {
     calculateSKU($pdo, $productsData);
@@ -159,6 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $inventoryItem = $_POST['supply_item'];
         $inventoryID = $_POST['item_id_increase'];
         $quantity = $_POST['new_quantity'];
+        $expiration = $_POST['new_expiration'];
         $reason = "added supply for " . $inventoryItem;
 
         // Fetch the unit from the tblinventory table
@@ -170,11 +270,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $unit = $unitResult['unit']; // Assuming 'unit' is the correct column name
 
         // Add the quantity to the inventory
-        $sqlAdd = "UPDATE tblinventory SET quantity = quantity + :quantity WHERE inventory_id = :inventoryID";
-        $statementAdd = $pdo->prepare($sqlAdd);
-        $statementAdd->bindParam(':quantity', $quantity, PDO::PARAM_INT);
-        $statementAdd->bindParam(':inventoryID', $inventoryID);
-        $statementAdd->execute();
+        // $sqlAdd = "UPDATE tblinventory SET quantity = quantity + :quantity WHERE inventory_id = :inventoryID";
+        // $statementAdd = $pdo->prepare($sqlAdd);
+        // $statementAdd->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+        // $statementAdd->bindParam(':inventoryID', $inventoryID);
+        // $statementAdd->execute();
+
+        //insert to tblinventoryitems
+        $sqlInventoryItems = "INSERT INTO tblinventoryitems (quantity, expiration_date, inventory_id) VALUES (:quantity, :expiration_date, :inventory_id)";
+        $statementInventoryItems = $pdo->prepare($sqlInventoryItems);
+        $statementInventoryItems->bindParam(':quantity', $quantity);
+        $statementInventoryItems->bindParam(':expiration_date', $expiration);
+        $statementInventoryItems->bindParam(':inventory_id', $inventoryID);
+        $statementInventoryItems->execute();
+
+        //INSERT HERE THE FUNCTION THAT RE-COMPUTES TBLINVENTORY QUANTITY BASED ON TBLINVENTORYITEMS
+        recalculateInventoryQuantity($pdo);
 
         //recalculate product sku and availability
         recalculateStatus($pdo, $productsData);
@@ -205,6 +316,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $itemID = $_POST['item_id'];
         $quantity = $_POST['new_quantity'];
         $reason = $_POST['reason'];
+        $quantityString = "-" . $quantity;
+
+        //remove expired and zero quantity
+        removeExpired($pdo);
+        removeZeroQuantity($pdo);
+        recalculateInventoryQuantity($pdo);
 
         // Fetch the unit from the tblinventory table
         $sqlFetchUnit = "SELECT unit FROM tblinventory WHERE inventory_id = :inventory_id";
@@ -212,21 +329,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statementFetchUnit->bindParam(':inventory_id', $itemID);
         $statementFetchUnit->execute();
         $unitResult = $statementFetchUnit->fetch(PDO::FETCH_ASSOC);
-        $unit = $unitResult['unit']; // Assuming 'unit' is the correct column name
+        $unit = $unitResult['unit'];
+
+        // Fetch inventoryitems with expiration_date ascending
+        $sqlInventoryItems = "SELECT * FROM tblinventoryitems WHERE inventory_id = :inventory_id ORDER BY expiration_date ASC, quantity ASC";
+        $statementInventoryItems = $pdo->prepare($sqlInventoryItems);
+        $statementInventoryItems->bindParam(':inventory_id', $itemID);
+        $statementInventoryItems->execute();
+        $inventoryitemsData = $statementInventoryItems->fetchAll(PDO::FETCH_ASSOC);
 
 
-        // Deduct the quantity from the inventory
-        $sqlDeduct = "UPDATE tblinventory SET quantity = quantity - :quantity WHERE inventory_id = :inventoryID";
-        $statementDeduct = $pdo->prepare($sqlDeduct);
-        $statementDeduct->bindParam(':quantity', $quantity, PDO::PARAM_INT);
-        $statementDeduct->bindParam(':inventoryID', $itemID);
-        $statementDeduct->execute();
+        foreach ($inventoryitemsData as $data) {
+            if ($quantity <= 0) {
+                break; // Exit the loop if there's nothing left to deduct
+            }
+
+            // Calculate the deduction amount for the current item
+            $deductionAmount = min($data['quantity'], $quantity);
+            error_log("deduction Amount: $deductionAmount");
+
+            // Update the quantity for the current inventory item
+            $sqlDeduct = "UPDATE tblinventoryitems SET quantity = quantity - :deductionAmount WHERE tblinventoryitems_id = :inventoryID";
+            $statementDeduct = $pdo->prepare($sqlDeduct);
+            $statementDeduct->bindParam(':deductionAmount', $deductionAmount, PDO::PARAM_INT);
+            $statementDeduct->bindParam(':inventoryID', $data['tblinventoryitems_id']);
+            $statementDeduct->execute();
+            // Update the remaining quantity to deduct
+            $quantity -= $deductionAmount;
+        }
+
+
+
+        //INSERT HERE THE FUNCTION THAT RE-COMPUTES TBLINVENTORY QUANTITY BASED ON TBLINVENTORYITEMS
+        recalculateInventoryQuantity($pdo);
 
         //recalculate product sku and availability
         recalculateStatus($pdo, $productsData);
 
         // Convert the quantity to a string and prepend "-"
-        $quantityString = "-" . $quantity;
+
 
         // Insert data into tblInventoryReports
         date_default_timezone_set('Asia/Manila');
@@ -248,6 +389,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit(); // Ensure that code stops executing after redirection
     }
 }
+
+
 // Sa add,edit,delete button
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -256,14 +399,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newItem = $_POST['new_item'];
         $newType = $_POST['new_type'];
         $newQuantity = $_POST['new_quantity'];
+        $newExpiration = $_POST['new_expiration'];
         $newUnit = $_POST['new_unit'];
         $newReorderPoint = $_POST['new_reorder_point'];
 
-        $sqlAdd = "INSERT INTO tblinventory (inventory_item, item_type ,quantity, unit,reorder_point) VALUES (:newItem, :newType, :newQuantity, :newUnit, :reorderPoint)";
+        $sqlAdd = "INSERT INTO tblinventory (inventory_item, item_type, unit, reorder_point) VALUES (:newItem, :newType, :newUnit, :reorderPoint)";
         $statementAdd = $pdo->prepare($sqlAdd);
         $statementAdd->bindParam(':newItem', $newItem);
         $statementAdd->bindParam(':newType', $newType);
-        $statementAdd->bindParam(':newQuantity', $newQuantity);
         $statementAdd->bindParam(':newUnit', $newUnit);
         $statementAdd->bindParam(':reorderPoint', $newReorderPoint);
         $statementAdd->execute();
@@ -274,6 +417,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statement->execute();
         $lastInventoryIDResult = $statement->fetch(PDO::FETCH_ASSOC);
         $lastInventoryID = $lastInventoryIDResult['last_inventory_id'];
+
+        //insert to tblinventoryitems the initial supply
+        $sqlInventoryItems = "INSERT INTO tblinventoryitems (quantity, expiration_date, inventory_id) VALUES (:quantity, :expiration_date, :inventory_id)";
+        $statementInventoryItems = $pdo->prepare($sqlInventoryItems);
+        $statementInventoryItems->bindParam(':quantity', $newQuantity);
+        $statementInventoryItems->bindParam(':expiration_date', $newExpiration);
+        $statementInventoryItems->bindParam(':inventory_id', $lastInventoryID);
+        $statementInventoryItems->execute();
+
+        //INSERT HERE THE FUNCTION THAT RE-COMPUTES TBLINVENTORY QUANTITY BASED ON TBLINVENTORYITEMS
+        recalculateInventoryQuantity($pdo);
 
         //add a record for initial supply of a new inventory
         $reason = "New Inventory initial supply for " . $newItem;
@@ -287,8 +441,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statementInsertReport->bindParam(':record_type', $recordType);
         $statementInsertReport->bindParam(':reason', $reason);
         $statementInsertReport->execute();
-
-
 
         //add user log [add new inventory item]
         $DateTime = new DateTime();

@@ -47,40 +47,6 @@ function showReport(reportType) {
   } 
 }
 
-// Remove the unnecessary condition for 'userlogs' in fetchDataAndDisplay function
-
-
- 
-function downloadPDF(containerId) {
-var container = document.getElementById(containerId);
-  if (container) {
-    var contentToPrint = container.cloneNode(true); 
-    
-    $(contentToPrint).find('.search-filter, .download-btn').remove();
-
-    var printWindow = window.open('', '', 'height=400,width=800');
-    printWindow.document.write('<html><head><title>PDF Export</title>');
-    printWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">'); 
-    printWindow.document.write('<style>');
-    printWindow.document.write(`
-      .container { margin-top: 20px; }
-      .table { border-collapse: collapse; width: 100%; }
-      .table th, .table td { border: 1px solid #dee2e6; padding: 8px; }
-      .table th { background-color: #f8f9fa; }
-      .text-center { text-align: center; }
-      .table-responsive { overflow-x: hidden; } /* Disable horizontal scrolling */
-      .table-responsive table { width: auto; } /* Set table width to auto */
-    `); 
-    printWindow.document.write('</style></head><body>');
-    printWindow.document.write(contentToPrint.innerHTML); 
-    printWindow.document.write('</body></html>');
-    printWindow.document.close();
-    printWindow.print();
-  } else {
-    console.error("Container element not found.");
-  }
-}
-
 //filtersss start
 function searchSales() {//for sales report
   var startDate = $("#startDateSales").val();
