@@ -14,7 +14,9 @@ $coffee_data = $db->query("SELECT * FROM tblcoffeeshop")->get();
     <nav class="navbar navbar-expand-lg bg-none navbar-dark pb-0">
         <a href="/" class="navbar-brand px-lg-4 m-0">
             <?php foreach ($coffee_data as $data) : ?>
-                <h1 class="m-0 display-4 text-uppercase text-white"><?= $data['shopname'] ?></h1>
+                <h1 class="m-0 display-4 text-uppercase text-white">
+                    <img height="60px" width="60px" style="object-fit: cover; border-radius: 50%;" src="/uploads/<?= $data['logo'] ?>" alt="Logo"> <?= $data['shopname'] ?>
+                </h1>
             <?php endforeach; ?>
         </a>
         <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">

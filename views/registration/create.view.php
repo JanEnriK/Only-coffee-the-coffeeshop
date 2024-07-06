@@ -25,13 +25,13 @@
                 <div class="col-lg-6 my-5 my-lg-0">
                     <div class="p-5">
                         <div class="mb-4">
-                            <h1 class="display-3 text-primary">We Listen!</h1>
-                            <h1 class="text-white">Tell us About your Experience</h1>
+                            <h1 class="display-3 text-primary">Sign Up and Listen!</h1>
+                            <h1 class="text-white">Join us and experiece great service</h1>
                         </div>
                         <ul class="list-inline text-white m-0">
-                            <li class="py-2"><i class="fa fa-check text-primary mr-3"></i>Serve the Best Tasting Coffee</li>
-                            <li class="py-2"><i class="fa fa-check text-primary mr-3"></i>Home of Caffeine Addict </li>
-                            <li class="py-2"><i class="fa fa-check text-primary mr-3"></i>Provide Fast Service</li>
+                            <?php foreach (json_decode($coffee['vision']) as $visions) : ?>
+                                <li class="py-2"><i class="fa fa-check text-primary mr-3"></i><?= $visions ?></li>
+                            <?php endforeach ?>
                         </ul>
                     </div>
                 </div>
@@ -88,7 +88,6 @@
                                 <button class="btn btn-primary btn-block font-weight-bold py-3" type="submit">Register</button>
                             </div>
                         </form>
-
                     </div>
                 </div>
             </div>

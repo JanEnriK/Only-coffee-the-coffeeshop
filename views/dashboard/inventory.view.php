@@ -199,6 +199,36 @@
 
         /* Optional: Alternate background color for headers */
     }
+
+    /* styles for modal of inventory item */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        overflow: auto;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 3% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+    }
+
+    .close-button {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        cursor: pointer;
+    }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -454,6 +484,14 @@
 </script>
 
 <body>
+    <!-- inventory items view modal-->
+    <div id="inventoryDetailModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="inventoryDetails"></div>
+        </div>
+    </div>
+
     <!-- low stock modal -->
     <div class="overlay" id="lowStockOverlay">
         <div class="overlay-content">
@@ -499,7 +537,7 @@
             <div class="info-box">
                 <button id="closePilferageFormBtn" class="button delete-button">X</button>
                 <h2>File Pilferage</h2>
-                <form method="post" action="/admin_dashboard/inventory" id="addInventoryForm">
+                <form method="post" action="/admin_dashboard/inventory" id="addInventoryForm" onsubmit="return confirm('Are you want to file this shrinkage?');">
                     <div class="form-group">
                         <!-- Hidden input to store the inventory_id -->
                         <input type="hidden" name="item_id" id="item_id" value="">
@@ -516,7 +554,7 @@
                     </div>
                     <div class="form-group" style="width: 50%; display: inline-block;">
                         <label for="new_quantity">Quantity to reduce: </label>
-                        <input type="number" class="form-control" name="new_quantity" placeholder="Quantity" required>
+                        <input type="number" class="form-control" min="1" name="new_quantity" placeholder="Quantity" required>
                     </div>
                     <span style="color: grey; font-size: small;" id=unit></span>
                     <div class="form-group">
@@ -534,7 +572,7 @@
         <div class="overlay-content">
             <div class="info-box">
                 <button id="closeAddInventoryFormBtn" class="button delete-button">X</button>
-                <h2>Add Inventory</h2>
+                <h2>Add Inventory Supply</h2>
                 <form method="post" action="/admin_dashboard/inventory" id="addInventoryForm">
                     <div class="form-group">
                         <input type="hidden" name="item_id_increase" id="item_id_increase" value="">
@@ -550,7 +588,11 @@
                     </div>
                     <div class="form-group" style="width: 50%; display: inline-block;">
                         <label for="new_quantity">Quantity to add in supply: </label>
-                        <input type="number" class="form-control" name="new_quantity" placeholder="Quantity" required>
+                        <input type="number" min="1" class="form-control" name="new_quantity" placeholder="Quantity: " required>
+                    </div>
+                    <div class="form-group" style="width: 50%; display: inline-block;">
+                        <label for="new_expiration">Expiration Date: </label>
+                        <input type="date" class="form-control" name="new_expiration" placeholder="Expiration Date: " required>
                     </div>
                     <span style="color: grey; font-size: small;" id="unit_increase"></span>
                     <button type="submit" name="submit_add_item" id="addInventoryButton" class="button add-button" style="width:100%;">Add</button>
@@ -582,8 +624,12 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="new_quantity">Quantity: </label>
-                        <input type="number" class="form-control" name="new_quantity" placeholder="Quantity: " required>
+                        <label for="new_quantity">Initial quantity: </label>
+                        <input type="number" min="1" class="form-control" name="new_quantity" placeholder="Initial Quantity: " required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new_expiration">Expiration date of initial supply: </label>
+                        <input type="date" class="form-control" name="new_expiration" placeholder="Expiration Date: " required>
                     </div>
                     <div class="form-group">
                         <label for="new_unit">Unit: </label>
@@ -622,7 +668,7 @@
                                         <?= $inventoryDataRow['quantity'] ?>
                                     </td>
                                     <td class="tableDefault">
-                                        <input type="number" name="<?= "newQuantity" . $inventoryDataRow['inventory_id'] ?>" placeholder="Edit Quantity" value="<?= $inventoryDataRow['quantity'] ?>" required>
+                                        <input type="number" min="1" name="<?= "newQuantity" . $inventoryDataRow['inventory_id'] ?>" placeholder="Edit Quantity" value="<?= $inventoryDataRow['quantity'] ?>" required>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -723,8 +769,7 @@
                 </div>
                 <br>
                 <div style="display: flex; justify-content: space-between;">
-                    <button type="button" class="button add-button" id="addForm">+ Add
-                        Inventory</button>
+                    <button type="button" class="button add-button" id="addForm">+ Add New Inventory</button>
 
                     <button type="button" class="button edit-button" id="addInventoryBtn">+ Add Supply</button>
                     <button type="button" class="button delete-button" id="filePilferageBtn" style="margin-left: auto;">🗑️ File Shrinkage</button>
@@ -751,7 +796,7 @@
                             <?php foreach ($inventoryData as $item) : ?>
                                 <tr>
                                     <td>
-                                        <?= $item['inventory_item'] ?>
+                                        <a onclick="viewItems(<?= $item['inventory_id'] ?>)"><?= $item['inventory_item'] ?></a>
                                     </td>
                                     <td>
                                         <?= $item['item_type'] ?>
@@ -805,5 +850,36 @@
         </div>
     </div>
 </body>
+<script>
+    //modal handling for inventory items
+    var modal = document.getElementById('inventoryDetailModal');
+    var closeButton = document.querySelector('.close-button');
+
+    closeButton.onclick = function() {
+        modal.style.display = 'none';
+    };
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    };
+
+
+
+    function viewItems(inventoryId) {
+        modal.style.display = 'block'; // Show the modal
+        fetchInventoryDetails(inventoryId);
+    }
+
+    function fetchInventoryDetails(inventoryId) {
+        fetch('/getInventoryItems.php?id=' + inventoryId)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('inventoryDetails').innerHTML = data;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
 
 </html>

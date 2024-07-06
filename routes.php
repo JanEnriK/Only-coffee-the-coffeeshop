@@ -10,7 +10,7 @@ $router->post('/check_discount', 'menu/check_discount.php')->only('auth');
 $router->post('/remove_cart', 'menu/remove_cart.php')->only('auth');
 $router->post('/update_cart', 'menu/update_cart.php')->only('auth');
 $router->get('/get_products', 'get_products.php');
-$router->get('/show_product', 'product_page.php');
+$router->get('/show_product', 'product_page.php')->only('auth');
 
 $router->get('/reservation', 'reservation.php')->only('auth');
 $router->get('/testimonial', 'feedback/testimonial.php')->only('auth');
@@ -61,16 +61,6 @@ $router->get('/pos_frontend/pos_connect', 'pos/pos_connect.php')->only('admin');
 
 $router->get('/register', 'registration/create.php')->only('guest');
 $router->post('/register', 'registration/store.php')->only('guest');
-
-$router->get('/forgot-password', 'registration/forget-to-view.php')->only('guest');
-$router->post('/forgot-password', 'registration/forget.php')->only('guest');
-
-$router->get('/check-email', 'registration/check-email-to-view.php')->only('guest');
-$router->get('/verify-token', 'registration/verify-token.php')->only('guest');
-
-$router->get('/reset-password', 'registration/reset-to-view.php')->only('guest');
-$router->post('/reset-password', 'registration/reset.php')->only('guest');
-
 
 $router->get('/login', 'sessions/create.php')->only('guest');
 $router->post('/sessions', 'sessions/store.php')->only('guest');

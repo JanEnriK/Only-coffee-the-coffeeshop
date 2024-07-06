@@ -4,8 +4,35 @@
 <link href="css/table.css" rel="stylesheet">
 
 <style>
+    .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        /* Make sure the card can grow to fill the container */
+    }
 
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        /* Pushes the button to the bottom */
+        flex-grow: 1;
+        /* Allows the card-body to grow and fill the available space */
+    }
 
+    .card-img-top {
+        width: 100%;
+        height: 200px;
+        /* Fixed height for images */
+        object-fit: cover;
+        /* Ensure images cover the area without stretching */
+    }
+
+    /* Optional: Style for disabled links */
+    .disabled {
+        opacity: 0.65;
+        pointer-events: none;
+    }
 </style>
 <!-- Page Header Start -->
 <div class="container-fluid page-header mb-5 position-relative overlay-bottom">
@@ -27,15 +54,15 @@
     <div class="row align-items-center">
         <!-- Product Image -->
         <div class="col-md-6">
-            <img src="uploads/<?= $product['image'] ?>" alt="Product Image" class="img-fluid" style="width: 100%;">
-
+            <!-- Fixed size for the image using Bootstrap's img-fluid class and custom styles -->
+            <img src="uploads/<?= $product['image'] ?>" alt="Product Image" class="img-fluid" style="width: 300px; height: auto;">
         </div>
 
         <!-- Product Details -->
         <div class="col-md-6">
             <h2><?= $product['product_name'] ?></h2>
             <p><?= $product['product_description'] ?></p>
-            <p><strong>Price: $<?= $product['price'] ?></strong></p>
+            <p><strong>Price: ₱<?= $product['price'] ?></strong></p>
 
             <form action="/menu" method="POST">
                 <input type="hidden" name="order_type" value="take-out">
@@ -56,79 +83,47 @@
     <br>
     <div class="dashboard">
         <div class="content">
-            <div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Product Name</th>
-                            <th>Product Description</th>
-                            <th>Price</th>
-                            <th>Status</th>
-                            <th>Image</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbl_body">
-
-                    </tbody>
-                </table>
+            <div class="row" id="productContainer">
+                <!-- Products will be inserted here -->
             </div>
         </div>
     </div>
-
     <script>
         // Fetch product data from the backend
         fetch('/get_products')
             .then(response => response.json())
             .then(products => {
-                const productContainer = document.getElementById('tbl_body');
+                const productContainer = document.getElementById('productContainer');
 
-                // Loop through the products and display them
+                // Loop through the products and display them as cards
                 products.forEach(product => {
-                    const productCard = document.createElement('tr');
-                    // productCard.className = 'col-lg-4 col-md-6 mb-5';
-                    // productCard.innerHTML = `
-                    //                         <td><a href =/show_product?id=${product.product_id}>${product.product_name}</a></td>
-                    //                         <td>${product.product_description}</td>
-                    //                         <td>${product.price}</td>
-                    //                         <td>${product.status}</td>
-                    //                         <td><img height="100px" src="uploads/${product.image}" alt="${product.product_name}"></td>
-                    //                     `;
-
-
-                    if (product.status === "Available") {
-                        // If the product is available, enable the link
-                        productCard.innerHTML = `
-                                <td><a href="/show_product?id=${product.product_id}">${product.product_name}</a></td>
-                                <td>${product.product_description}</td>
-                                <td>${product.price}</td>
-                                <td>${product.status}</td>
-                                <td><img height="100px" src="uploads/${product.image}" alt="${product.product_name}"></td>
-                            `;
-                    } else if (product.status === "Not Available") {
-                        // If the product is not available, disable the link
-                        productCard.innerHTML = `
-                                <td><a style="color:#878787;" disabled>${product.product_name}</a></td>
-                                <td>${product.product_description}</td>
-                                <td>${product.price}</td>
-                                <td>${product.status}</td>
-                                <td><img height="100px" src="uploads/${product.image}" alt="${product.product_name}"></td>
-                            `;
-                    } else {
-                        //display null products
+                    let viewProductLink = `<a href="/show_product?id=${product.product_id}" class="btn btn-primary btn-block">View Product</a>`;
+                    if (product.status !== "Available") {
+                        // If the product is not available, make the link unclickable and visually disabled
+                        viewProductLink = `<a href="#" class="btn btn-primary btn-block disabled">View Product</a>`;
                     }
-                    productContainer.appendChild(productCard);
+                    const productCard = document.createElement('div');
+                    productCard.className = 'col-lg-3 col-md-6 col-sm-12 mb-4'; // Adjust grid classes as needed
+
+                    productCard.innerHTML = `
+                <div class="card h-100 rounded"> <!-- Ensure the card takes full height -->
+                    <img src="uploads/${product.image}" class="card-img-top rounded-top" alt="${product.product_name}" style="height: 200px; object-fit: cover;">
+                    <div class="card-body ">
+                        <h5 class="card-title">${product.product_name}</h5>
+                        <p class="card-text">${product.product_description}</p>
+                        <p class="card-text"><small class="text-muted">₱ ${product.price}</small>
+                        <p class="card-text"><small class="text-muted">${product.status}</small><br>
+                        ${viewProductLink}
+                    </div>
+                </div>
+            `;
+
                     productContainer.appendChild(productCard);
                 });
             })
             .catch(error => console.error('Error:', error));
     </script>
 </div>
-
-<!-- Menu End -->
-
-
-
-
 
 <!-- Back to Top -->
 <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>

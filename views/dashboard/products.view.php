@@ -422,7 +422,7 @@ $db = App::resolve('Core\Database');
 
                             <td>
                                 <?php if (isset($products['image'])) : ?>
-                                    <img height="70px" src="/uploads/<?= $products['image'] ?>" alt="">
+                                    <img height="80px" width="100%" style="object-fit: cover;" src="/uploads/<?= $products['image'] ?>" alt="product image">
                                 <?php else : ?>
                                     <h5 style="text-align:center;">No Image</h5>
                                 <?php endif; ?>
@@ -438,7 +438,7 @@ $db = App::resolve('Core\Database');
                             </td>
                         </tr>
                         <tr class="edit-form" id="editForm<?= $products['product_id'] ?>">
-                            <td colspan="6">
+                            <td colspan="8">
                                 <form method="post" enctype="multipart/form-data" action="/admin_dashboard/products" onsubmit="return confirm('Are you sure you want to save changes for this product?');">
                                     <input type="hidden" name="edit_product_id" value="<?= $products['product_id'] ?>">
                                     <input type="text" name="edited_product" placeholder="Edit Product Name" value="<?= $products['product_name'] ?>" required>
@@ -456,7 +456,7 @@ $db = App::resolve('Core\Database');
                                     </select>
 
 
-                                    <input type="file" name="edited_image" id="edited_image" accept="image/jpeg,image/png,image/gif" required>
+                                    <input type="file" name="edited_image" id="edited_image" accept="image/jpeg,image/png,image/gif">
 
                                     <button type="submit" name="submit_edit" class="button edit-button">💾</button>
                                 </form>

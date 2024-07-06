@@ -15,13 +15,14 @@ if (!isset($_GET['orderDate'])) {
 $orderNumber = $_GET['orderNumber'];
 $orderNumber = mysqli_real_escape_string($conn, $orderNumber);
 $orderDate = $_GET['orderDate'];
+$orderDate = date('Y-m-d', strtotime($orderDate));
 
 // Prepare and execute the first query
 // Prepare and execute the first query
 $query = "SELECT tblproducts.product_name, tblorders.quantity, tblproducts.price, tblorders.discount, tblorders.order_status, tblorders.order_datetime 
          FROM tblorders 
          JOIN tblproducts ON tblorders.base_coffee_id = tblproducts.product_id 
-         WHERE tblorders.order_number =? AND tblorders.order_datetime =?";
+         WHERE tblorders.order_number =? AND DATE(tblorders.order_datetime) = ?";
 
 $stmt = mysqli_prepare($conn, $query);
 mysqli_stmt_bind_param($stmt, "ss", $orderNumber, $orderDate); // Corrected line

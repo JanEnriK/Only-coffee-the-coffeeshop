@@ -62,21 +62,23 @@ if (isset($_GET['get_inventory_data'])) {
   try {
     $filter = isset($_GET['filterValue']) ? $_GET['filterValue'] : '';
 
-    $inventoryQuery = "SELECT * FROM tblinventoryreport WHERE 1";
+    $baseQuery = "SELECT * FROM tblinventoryreport WHERE 1";
+    $params = [];
 
-    switch ($filter) {
-      case 'deduct':
-        $inventoryQuery .= " AND quantity < 0 ORDER BY quantity ASC";
-        break;
-      case 'add':
-        $inventoryQuery .= " AND quantity > 0 ORDER BY quantity DESC";
-        break;
-      default:
-        $inventoryQuery .= " ORDER BY datetime DESC";
-        break;
+    if ($filter) {
+      $inventoryQuery = $baseQuery . " AND inventory_item LIKE :filter ORDER BY datetime DESC";
+      $params[':filter'] = '%' . $filter . '%';
+    } else {
+      $inventoryQuery = $baseQuery . " ORDER BY datetime DESC";
     }
-
     $stmt = $pdo->prepare($inventoryQuery);
+
+    // Bind parameters if needed
+    if (!empty($params)) {
+      foreach ($params as $key => $value) {
+        $stmt->bindValue($key, $value);
+      }
+    }
 
     $stmt->execute();
     $inventoryData = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -147,7 +149,13 @@ if (isset($_GET['get_userlogs_data'])) {
     echo "Error: " . $e->getMessage();
   }
 }
+date_default_timezone_set('Asia/Manila');
+$sqlAdmin = "SELECT * FROM tblemployees WHERE employeeID = :id";
+$statementAdmin = $pdo->prepare($sqlAdmin);
+$statementAdmin->bindParam(':id', $_SESSION['user']['id']);
+$statementAdmin->execute();
+$Admin = $statementAdmin->fetch(PDO::FETCH_ASSOC);
 
-
-
-view('dashboard/reports.view.php');
+view('dashboard/reports.view.php', [
+  'Admin' => $Admin,
+]);

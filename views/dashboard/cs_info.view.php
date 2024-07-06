@@ -132,11 +132,28 @@
             <button id="closeFormBtn" class="button delete-button">X</button>
             <h2>Edit Coffeeshop Info</h2>
             <?php foreach ($coffeeshopData as $coffeeshop) : ?>
-                <form method="post" action="" onsubmit="return confirm('Are you sure you want to save?');">
+                <form method="post" action="" enctype="multipart/form-data" onsubmit="return confirm('Are you sure you want to save?');">
                     <input type="hidden" class="form-control" name="editId" value="<?= $coffeeshop['coffeeshopid'] ?>">
+                    <div class="form-group">
+                        <label for="editLogo">Coffee Shop Name:</label>
+                        <input type="file" class="form-control" name="editLogo" accept="image/jpeg,image/png,image/gif">
+                        <?php if (isset($errors)) : ?>
+                            <?php foreach ($errors as $item) : ?>
+                                <p><?= $item ?></p>
+                            <?php endforeach ?>
+                        <?php endif ?>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTagline">Tagline:</label>
+                        <textarea name="editTagline" class="form-control" style="resize: none; height: 100px; width: 100%; " required><?= $coffeeshop['tagline'] ?></textarea>
+                    </div>
                     <div class="form-group">
                         <label for="editShopName">Coffee Shop Name:</label>
                         <input type="text" class="form-control" name="editShopName" value="<?= $coffeeshop['shopname'] ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDateEstablished">Date Established:</label>
+                        <input type="date" class="form-control" name="editDateEstablished" value="<?= $coffeeshop['date_established'] ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="editBranch">Branch:</label>
@@ -154,11 +171,35 @@
                         <label for="editEmail">Email: </label>
                         <input type="email" class="form-control" name="editEmail" value="<?= $coffeeshop['email'] ?>" required>
                     </div>
+
                     <h2>Edit Value Added Tax(VAT)</h2>
                     <div class="form-group">
                         <label for="editVAT">VAT(in %):</label>
                         <input type="number" class="form-control" name="editVAT" min="0.01" step="0.01" max="100" placeholder="0.01% - 100.00%" value="<?= $coffeeshop['VAT'] ?>" required>
                     </div>
+
+                    <h2>Edit Operating Hours</h2>
+                    <div class="">
+                        <h4>Weekdays</h4>
+                        <label for="editWDST">Weekday Start Time:</label>
+                        <input type="time" class="form-control" name="editWDST" value="<?= $coffeeshop['weekday_start_time'] ?>" required>
+                        <label for="editWDET">Weekday End Time:</label>
+                        <input type="time" class="form-control" name="editWDET" value="<?= $coffeeshop['weekday_end_time'] ?>" required>
+
+                        <h4>Weekends</h4>
+                        <label for="editWEST">Weekend Start Time:</label>
+                        <input type="time" class="form-control" name="editWEST" value="<?= $coffeeshop['weekend_start_time'] ?>" required>
+                        <label for="editWEET">Weekend End Time:</label>
+                        <input type="time" class="form-control" name="editWEET" value="<?= $coffeeshop['weekend_end_time'] ?>" required>
+                    </div>
+                    <h2> About Us Visions</h2>
+                    <div class="form-group">
+                        <?php foreach (json_decode($coffeeshop['vision']) as $i => $vision) : ?>
+                            <input type="text" class="form-control" name="editVision<?= $i ?>" value="<?= $vision ?>" required>
+                        <?php endforeach ?>
+                    </div>
+
+                    <br><br>
                     <button type="submit" name="submit_edit" class="button edit-button" style="width:100%;">💾Save</button>
                 </form>
             <?php endforeach; ?>
@@ -166,7 +207,8 @@
     </div>
 </div>
 
-</div>
+
+<!-- VISSIBLE MAIN -->
 <div class="dashboard">
     <div class="content">
         <h2>Coffee Shop Information
@@ -177,12 +219,28 @@
                 <button type="button" class="btn btn-primary edit-button position-absolute top-0 end-0 m-3" id="editInfo">✎ Edit</button>
                 <h2>General Coffee Shop Information</h2>
                 <div class="info-item">
+                    <h4><b>CoffeeShop Logo</b></h4>
+                    <?php if (isset($coffeeshop['logo'])) : ?>
+                        <img height="200px" width="200px" style="object-fit: cover;" src="/uploads/<?= $coffeeshop['logo'] ?>" alt="product image">
+                    <?php else : ?>
+                        <h5 style="text-align:center;">No Image</h5>
+                    <?php endif; ?>
+                </div>
+                <div class="info-item">
                     <h4><b>CoffeeShop Name:</b></h4>
                     <p><?php echo $coffeeshop['shopname']; ?></p>
                 </div>
                 <div class="info-item">
+                    <h4><b>Tagline:</b></h4>
+                    <p style="text-indent: 2em; text-align: justify;"><?php echo $coffeeshop['tagline']; ?></p>
+                </div>
+                <div class="info-item">
                     <h4><b>Branch:</b></h4>
                     <p><?php echo $coffeeshop['branch']; ?></p>
+                </div>
+                <div class="info-item">
+                    <h4><b>Date Established:</b></h4>
+                    <p><?php echo $coffeeshop['date_established']; ?></p>
                 </div>
                 <div class="info-item">
                     <h4><b>Address:</b></h4>
@@ -196,10 +254,30 @@
                     <h4><b>Email:</b></h4>
                     <p><?php echo $coffeeshop['email']; ?></p>
                 </div>
+
                 <h2>Value Added Tax(VAT)</h2>
                 <div class="info-item">
                     <h4><b>VAT(in %):</b></h4>
                     <p><?php echo $coffeeshop['VAT']; ?></p>
+                </div>
+
+                <h2>Operating Hours</h2>
+                <div class="info-item">
+                    <h4><b>Weekdays:</b></h4>
+                    <p>Start: <?= date('h:ia', strtotime($coffeeshop['weekday_start_time'])) ?> - End: <?= date('h:ia', strtotime($coffeeshop['weekday_end_time'])) ?></p>
+                </div>
+                <div class="info-item">
+                    <h4><b>Weekends:</b></h4>
+                    <p>Start: <?= date('h:ia', strtotime($coffeeshop['weekend_start_time'])) ?> - End: <?= date('h:ia', strtotime($coffeeshop['weekend_end_time'])) ?></p>
+                </div>
+                <div class="info-item">
+                    <h4><b>Vision:</b></h4>
+                    <ul>
+                        <?php foreach (json_decode($coffeeshop['vision']) as $visions) : ?>
+                            <li><?= $visions ?></li>
+                        <?php endforeach ?>
+                    </ul>
+
                 </div>
             </div>
             <br><br><br><br>
