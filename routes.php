@@ -62,6 +62,18 @@ $router->get('/pos_frontend/pos_connect', 'pos/pos_connect.php')->only('admin');
 $router->get('/register', 'registration/create.php')->only('guest');
 $router->post('/register', 'registration/store.php')->only('guest');
 
+
+$router->get('/forgot-password', 'registration/forget-to-view.php')->only('guest');
+$router->post('/forgot-password', 'registration/forget.php')->only('guest');
+
+$router->get('/check-email', 'registration/check-email-to-view.php')->only('guest');
+$router->get('/verify-token', 'registration/verify-token.php')->only('guest');
+
+$router->get('/reset-password', 'registration/reset-to-view.php')->only('guest');
+$router->post('/reset-password', 'registration/reset.php')->only('guest');
+
+
+
 $router->get('/login', 'sessions/create.php')->only('guest');
 $router->post('/sessions', 'sessions/store.php')->only('guest');
 $router->delete('/sessions', 'sessions/destroy.php')->only('auth');

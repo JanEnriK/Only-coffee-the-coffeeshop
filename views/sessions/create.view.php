@@ -80,6 +80,7 @@ if (isset($_SESSION['signupSuccess']) && $_SESSION['signupSuccess'] === true) {
                                 <button class="btn btn-primary btn-block font-weight-bold py-3" type="submit">Sign In</button>
                             </div>
                         </form>
+                        <p class="text-white"><a href="/forgot-password">Forgot your password?</a></p>
                     </div>
                 </div>
             </div>

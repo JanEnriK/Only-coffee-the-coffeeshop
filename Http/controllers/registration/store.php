@@ -4,6 +4,13 @@ use Core\App;
 use Core\Database;
 use Core\Validator;
 use Core\Authenticator;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+// Include PHPMailer files
+require __DIR__ . '/../../../PHPMailer/src/Exception.php';
+require __DIR__ . '/../../../PHPMailer/src/PHPMailer.php';
+require __DIR__ . '/../../../PHPMailer/src/SMTP.php';
+
 
 $db = App::resolve('Core\Database');
 
@@ -37,7 +44,7 @@ foreach ($checkUsername as $usernameExist) {
 
 
 if (!empty($errors)) {
-  return view('registration/create.view.php', [
+  return view('views/registration/create.view.php', [
     'heading' => 'Register',
     'errors' => $errors,
     'coffee' => $coffee,
@@ -59,6 +66,33 @@ if ($user) {
     'username' => $username,
     'password' => password_hash($password, PASSWORD_BCRYPT),
   ]);
+  // Send welcome email
+  $mail = new PHPMailer(true);
+  try {
+    // Server settings
+    $mail->SMTPDebug = 2;                                 // Enable verbose debug output
+    $mail->isSMTP();                                      // Send using SMTP
+    $mail->Host       = 'smtp.gmail.com';                 // Set the SMTP server to send through
+    $mail->SMTPAuth   = true;                             // Enable SMTP authentication
+    $mail->Username   = 'geoolarte04@gmail.com';           // SMTP username
+    $mail->Password   = 'yclnmikifufhamaq';            // SMTP password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;   // Enable TLS encryption
+    $mail->Port       = 587;                              // TCP port to connect to
+
+    // Recipients
+    $mail->setFrom('no-reply@example.com', 'Only Coffee');
+    $mail->addAddress($email, $first_name);               // Add recipient
+
+    // Content
+    $mail->isHTML(true);                                  // Set email format to HTML
+    $mail->Subject = 'Registered! Welcome to Only Coffee';
+    $mail->Body    = 'Hi ' . $first_name . ',<br>Thank you for registering with us.';
+
+    $mail->send();
+    echo 'Message has been sent';
+  } catch (Exception $e) {
+    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+  }
 
   Authenticator::login($user);
   $_SESSION['signupSuccess'] = true;
