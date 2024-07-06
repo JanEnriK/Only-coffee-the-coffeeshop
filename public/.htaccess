@@ -1,0 +1,19 @@
+
+# HTID:23140505: DO NOT REMOVE OR MODIFY THIS LINE AND THE LINES BELOW
+php_value display_errors 1
+# DO NOT REMOVE OR MODIFY THIS LINE AND THE LINES ABOVE HTID:23140505:
+
+# BEGIN .htaccess
+
+RewriteEngine On
+RewriteBase /
+
+# Allow direct access to index.php
+RewriteRule ^index\.php$ - [L]
+
+# Redirect all requests to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+
+# END .htaccess

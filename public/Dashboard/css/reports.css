@@ -1,0 +1,63 @@
+body{
+  background-color: antiquewhite;
+}
+
+.report-container {
+  display: none;
+}
+
+.search-filter {
+  margin-bottom: 20px;
+}
+
+.report-table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.feedback-description {
+  max-height: 40px;
+  overflow: hidden;
+}
+
+.container {
+  border-radius: 10px;
+  box-shadow: 0 7px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  padding: 20px;
+  margin-top: 2%;
+  background-color: #ffff;
+}
+
+.report-container {
+  margin-top: 20px;
+}
+
+.btn-primary {
+  background-color: #2473c0; 
+  border-color: #5ba1e7; 
+}
+
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #0c4881; 
+}
+
+
+@media print {
+  .report-container {
+    display: block !important;
+  }
+  .download-btn {
+    display: none;
+  }
+
+}
+
+  .search-filter input,
+  .search-filter select {
+    padding: 8px;
+    margin-right: 9px;
+    width: 200px;
+  }

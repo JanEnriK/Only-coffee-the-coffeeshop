@@ -1,0 +1,154 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #F5F5DC;
+}
+
+table {
+  width: 100%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  color: #333;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 15px;
+  text-align: left;
+  max-width: 300px;
+  word-wrap: break-word;
+}
+
+th {
+  background-color: #2473C0;
+  color: #fff;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button.add-button {
+  background-color: #2473c0;
+  color: white;
+  margin-right: 5px;
+}
+
+.button.edit-button {
+  background-color: green;
+  color: white;
+}
+
+.button.delete-button {
+  background-color: #FF6347;
+  color: white;
+}
+
+/* Style sa edit form */
+.edit-form {
+  display: none;
+  text-align: center;
+}
+
+.edit-form input {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  vertical-align: middle;
+}
+
+.edit-form select {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  vertical-align: middle;
+}
+
+.edit-form textarea {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  vertical-align: middle;
+}
+
+.edit-form button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #008CBA;
+  color: white;
+  cursor: pointer;
+}
+
+.action-buttons {
+  display: flex;
+}
+
+.button-form {
+  display: table-row;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/*STYLE FORDA OVER LAY FORM */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent background */
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.overlay-content {
+  max-height: 100%;
+  /* Adjust maximum height as needed */
+  max-width: 100%;
+  /* Adjust maximum width as needed */
+  overflow-y: auto;
+}
+
+textarea {
+  resize: none;
+}
+
+.dropdown-container {
+  margin-bottom: 10px;
+}
+
+/*default table no design */
+.tableDefault,
+.tableDefault tr:nth-child(even) {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  /* Add borders for demonstration; you can remove or modify this */
+  padding: 8px;
+  /* Add padding for better readability; you can adjust this */
+  text-align: left;
+  color: black;
+  background-color: transparent;
+  box-shadow: none;
+
+  /* Optional: Alternate background color for headers */
+}

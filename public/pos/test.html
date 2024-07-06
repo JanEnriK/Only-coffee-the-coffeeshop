@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>POS System</title>
+    <link rel="stylesheet" href="Main.css" />
+</head>
+<body>
+
+    <div class="products-container">
+        <h2>Products</h2>
+        <ul id="product-list"></ul>
+    </div>
+
+    <script>
+        
+        function displayProducts() {
+            fetch('posConnect.php')
+                .then(response => response.json())
+                .then(data => {
+                    const productList = document.getElementById('product-list');
+
+                    
+                    data.forEach(tblproducts => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${tblproducts.product_name} - php${tblproducts.price}`;
+                        productList.appendChild(listItem);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        
+        displayProducts();
+    </script>
+</body>
+</html>
