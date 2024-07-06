@@ -1,14 +1,5 @@
-<?php
+<?php 
 
-use Core\App;
-use Core\Database;
+view('registration/create.view.php');
 
-$db = App::resolve('Core\Database');
-
-$coffee = $db->query("SELECT * FROM tblcoffeeshop")->find();
-view(
-    'registration/create.view.php',
-    [
-        'coffee' => $coffee,
-    ]
-);
+?>

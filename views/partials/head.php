@@ -1,17 +1,9 @@
-<?php
-
-use Core\App;
-use Core\Database;
-
-$db = App::resolve('Core\Database');
-$coffee_data = $db->query("SELECT * FROM tblcoffeeshop")->find();
-?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title><?= $coffee_data['shopname'] ?></title>
+    <title>Thesis Coffee Shop</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">

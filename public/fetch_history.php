@@ -6,19 +6,7 @@ session_start(); // Start the session
 header('Content-Type: application/json');
 $userID = $_SESSION['user']['id']; // Assuming you store user ID in session upon login
 
-$query = "SELECT 
-    DATE(order_datetime) as order_date,
-    order_datetime, 
-    order_number, 
-    SUM(quantity) as record_count 
-FROM tblorders 
-WHERE customer_id = ? 
-GROUP BY 
-    DATE(order_datetime), 
-    order_number 
-ORDER BY 
-    order_datetime DESC;
-";
+$query = "SELECT order_datetime, order_number, COUNT(*) as record_count FROM tblorders WHERE customer_id = ? GROUP BY order_datetime ORDER BY order_datetime DESC;";
 $stmt = mysqli_prepare($conn, $query);
 mysqli_stmt_bind_param($stmt, "i", $userID);
 mysqli_stmt_execute($stmt);

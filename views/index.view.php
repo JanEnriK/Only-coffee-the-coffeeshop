@@ -41,7 +41,7 @@ if (isset($_SESSION['signupSuccess']) && $_SESSION['signupSuccess'] === true) {
                 <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                     <h2 class="text-primary font-weight-medium m-0">We Have Been Serving</h2>
                     <h1 class="display-1 text-white m-0">COFFEE</h1>
-                    <h2 class="text-white m-0">SINCE <?= date('Y', strtotime($coffee['date_established'])) ?></h2>
+                    <h2 class="text-white m-0">SINCE 2023</h2>
                 </div>
             </div>
             <div class="carousel-item">
@@ -49,7 +49,7 @@ if (isset($_SESSION['signupSuccess']) && $_SESSION['signupSuccess'] === true) {
                 <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                     <h2 class="text-primary font-weight-medium m-0">Only Coffee</h2>
                     <h1 class="display-1 text-white m-0">BEST COFEE</h1>
-                    <h2 class="text-white m-0">in <?= $coffee['branch'] ?></h2>
+                    <h2 class="text-white m-0">in the University Belt</h2>
                 </div>
             </div>
         </div>
@@ -69,12 +69,12 @@ if (isset($_SESSION['signupSuccess']) && $_SESSION['signupSuccess'] === true) {
     <div class="container">
         <div class="section-title">
             <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">About Us</h4>
-            <h1 class="display-4">Serving Since <?= date('Y', strtotime($coffee['date_established'])) ?></h1>
+            <h1 class="display-4">Serving Since 2023</h1>
         </div>
         <div class="row">
             <div class="col-lg-4 py-0 py-lg-5">
                 <h1 class="mb-3">Our Tagline</h1>
-                <p class="mb-3 text-justify" style="text-indent: 2em;"><?= $coffee['tagline'] ?></p>
+                <p class="mb-3 text-justify">&emsp;&emsp;&emsp;Step into 'Only Coffee', where every brew is a study buddy and every sip fuels your university journey. Embrace the aroma of academia as you indulge in our meticulously crafted blends, the perfect companions for your academic pursuits. Join us at the intersection of caffeine and campus life, where 'Only Coffee' means endless possibilities.</p>
                 <!-- <a href="" class="btn btn-secondary font-weight-bold py-2 px-4 mt-2 ">Learn More</a> -->
             </div>
             <div class="col-lg-4 py-5 py-lg-0" style="min-height: 500px;">
@@ -84,9 +84,9 @@ if (isset($_SESSION['signupSuccess']) && $_SESSION['signupSuccess'] === true) {
             </div>
             <div class="col-lg-4 py-0 py-lg-5">
                 <h1 class="mb-3">Our Vision</h1>
-                <?php foreach (json_decode($coffee['vision']) as $visions) : ?>
-                    <h5 class="mb-3"><i class="fa fa-check text-primary mr-3"></i><?= $visions ?></h5>
-                <?php endforeach ?>
+                <h5 class="mb-3"><i class="fa fa-check text-primary mr-3"></i>Serve the Best Tasting Coffee</h5>
+                <h5 class="mb-3"><i class="fa fa-check text-primary mr-3"></i>Home of Caffeine Addict Students</h5>
+                <h5 class="mb-3"><i class="fa fa-check text-primary mr-3"></i>Provide Fast Service</h5>
                 <!-- <a href="" class="btn btn-primary font-weight-bold py-2 px-4 mt-2">Learn More</a> -->
             </div>
         </div>
@@ -159,67 +159,69 @@ if (isset($_SESSION['signupSuccess']) && $_SESSION['signupSuccess'] === true) {
         </div>
         <div class="row">
             <div class="col-lg-6">
+                <h1 class="mb-5">Espresso & Coffee</h1>
                 <div class="row align-items-center mb-5">
                     <div class="col-4 col-sm-3">
-                        <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[0]['image'] ?>" alt="">
+                        <img class="w-100 rounded-circle mb-3 mb-sm-0" src="img/menu-1.jpg" alt="">
+                        <h5 class="menu-price">70</h5>
                     </div>
                     <div class="col-8 col-sm-9">
-                        <h4><?= $products[0]['product_name'] ?></h4>
-                        <p class="m-0"><?= $products[0]['product_description'] ?></p>
-                        <a href="/show_product?id=<?= $products[0]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[0]['price'] ?></a>
+                        <h4>Plain Black</h4>
+                        <p class="m-0">Hard hiting plain black coffee.</p>
                     </div>
                 </div>
                 <div class="row align-items-center mb-5">
                     <div class="col-4 col-sm-3">
-                        <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[1]['image'] ?>" alt="">
+                        <img class="w-100 rounded-circle mb-3 mb-sm-0" src="img/menu-2.jpg" alt="">
+                        <h5 class="menu-price">80</h5>
                     </div>
                     <div class="col-8 col-sm-9">
-                        <h4><?= $products[1]['product_name'] ?></h4>
-                        <p class="m-0"><?= $products[1]['product_description'] ?></p>
-                        <a href="/show_product?id=<?= $products[1]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[1]['price'] ?></a>
+                        <h4>Cafe Americano</h4>
+                        <p class="m-0">Classic coffee American taste buds love.</p>
                     </div>
                 </div>
                 <div class="row align-items-center mb-5">
                     <div class="col-4 col-sm-3">
-                        <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[2]['image'] ?>" alt="">
+                        <img class="w-100 rounded-circle mb-3 mb-sm-0" src="img/menu-3.jpg" alt="">
+                        <h5 class="menu-price">115</h5>
                     </div>
                     <div class="col-8 col-sm-9">
-                        <h4><?= $products[2]['product_name'] ?></h4>
-                        <p class="m-0"><?= $products[2]['product_description'] ?></p>
-                        <a href="/show_product?id=<?= $products[2]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[2]['price'] ?></a>
+                        <h4>Cafe Latte</h4>
+                        <p class="m-0">Soft simple coffee mixed with milk.</p>
                     </div>
                 </div>
             </div>
 
             <div class="col-lg-6">
+                <h1 class="mb-5">Non Coffee</h1>
                 <div class="row align-items-center mb-5">
                     <div class="col-4 col-sm-3">
-                        <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[3]['image'] ?>" alt="">
+                        <img class="w-100 rounded-circle mb-3 mb-sm-0" src="img/menu-1.jpg" alt="">
+                        <h5 class="menu-price">100</h5>
                     </div>
                     <div class="col-8 col-sm-9">
-                        <h4><?= $products[3]['product_name'] ?></h4>
-                        <p class="m-0"><?= $products[3]['product_description'] ?></p>
-                        <a href="/show_product?id=<?= $products[3]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[3]['price'] ?></a>
+                        <h4>Chocolate Cream</h4>
+                        <p class="m-0">Classic milk and chocolate based drink.</p>
                     </div>
                 </div>
                 <div class="row align-items-center mb-5">
                     <div class="col-4 col-sm-3">
-                        <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[4]['image'] ?>" alt="">
+                        <img class="w-100 rounded-circle mb-3 mb-sm-0" src="img/menu-2.jpg" alt="">
+                        <h5 class="menu-price">100</h5>
                     </div>
                     <div class="col-8 col-sm-9">
-                        <h4><?= $products[4]['product_name'] ?></h4>
-                        <p class="m-0"><?= $products[4]['product_description'] ?></p>
-                        <a href="/show_product?id=<?= $products[4]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[4]['price'] ?></a>
+                        <h4>Caramel Cream</h4>
+                        <p class="m-0">Milk based drink with caramel flavor.</p>
                     </div>
                 </div>
                 <div class="row align-items-center mb-5">
                     <div class="col-4 col-sm-3">
-                        <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[5]['image'] ?>" alt="">
+                        <img class="w-100 rounded-circle mb-3 mb-sm-0" src="img/menu-3.jpg" alt="">
+                        <h5 class="menu-price">110</h5>
                     </div>
                     <div class="col-8 col-sm-9">
-                        <h4><?= $products[5]['product_name'] ?></h4>
-                        <p class="m-0"><?= $products[5]['product_description'] ?></p>
-                        <a href="/show_product?id=<?= $products[5]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[5]['price'] ?></a>
+                        <h4>Matcha Cream</h4>
+                        <p class="m-0">Milk based drink with matcha flavor.</p>
                     </div>
                 </div>
             </div>
@@ -292,24 +294,25 @@ if (isset($_SESSION['signupSuccess']) && $_SESSION['signupSuccess'] === true) {
 
 
 <!-- Testimonial Start -->
-<div class="container-fluid py-5 bg-light">
+<div class="container-fluid py-5">
     <div class="container">
         <div class="section-title">
-            <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">Testimonials</h4>
-            <h1 class="display-4">Our Clients Says!</h1>
+            <h4 class="text-primary text-uppercase" style="letter-spacing: 5px;">Testimonial</h4>
+            <h1 class="display-4">What Do Our Clients Say?</h1>
         </div>
         <div class="owl-carousel testimonial-carousel">
 
             <?php foreach ($feedback as $fback) : ?>
 
-                <div class="testimonial-item card-body">
+                <div class="testimonial-item">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="ml-3 text-center">
-                            <h4 style="text-transform: capitalize;"><?= $fback['title'] ?></h4>
-                            <p class="m-0" style="padding-right:20px">"<?= $fback['feedback_desc'] ?>"</p>
-                            <p class="m-0 text-left font-weight-bold" style="text-transform: capitalize;">- <?= $fback['firstname'] ?></p>
+                        <img class="img-fluid" src="img/testimonial-1.jpg" alt="">
+                        <div class="ml-3">
+                            <h4><?= $fback['username'] ?></h4>
+                            <i><?= $fback['title'] ?></i>
                         </div>
                     </div>
+                    <p class="m-0" style="padding-right:20px"><?= $fback['feedback_desc'] ?></p>
                 </div>
 
             <?php endforeach; ?>
@@ -338,23 +341,7 @@ if (isset($_SESSION['signupSuccess']) && $_SESSION['signupSuccess'] === true) {
 
 <script>
     $(document).ready(function() {
-        $(".owl-carousel").owlCarousel({
-            loop: true,
-            margin: 10,
-            nav: false,
-            dots: false,
-            responsive: {
-                0: {
-                    items: 1
-                },
-                600: {
-                    items: 2
-                },
-                1000: {
-                    items: 3
-                }
-            }
-        });
+        $(".owl-carousel").owlCarousel();
     });
 </script>
 

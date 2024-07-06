@@ -40,20 +40,6 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
   ';
   // Clear the session variable to prevent the alert from showing again on page reload
   unset($_SESSION['orderSubmited']['ordernumber']);
-} elseif (isset($_SESSION['orderDeclined']['ordernumber'])) {
-  echo '
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script>
-  document.addEventListener("DOMContentLoaded", function() {
-      Swal.fire({
-          title: "Order ' . $_SESSION['orderDeclined']['ordernumber'] . ' Has been declined.",
-          icon: "error",
-          confirmButtonText: "OK"
-      });
-  });
-  </script>
-  ';
-  unset($_SESSION['orderDeclined']['ordernumber']);
 }
 ?>
 
@@ -101,7 +87,7 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
             </div>
             <label for="inputReferenceNumber">Reference Number:</label>
             <input type="text" id="inputReferenceNumber" name="inputReferenceNumber">
-            <button type="submit" name="action" value="approve" class="btn btn-primary btn-block" id="approveBtn" disabled>Approve</button>
+            <button type="submit" name="action" value="approve" class="btn btn-primary btn-block">Approve</button>
             <button type="submit" name="action" value="decline" class="btn btn-danger btn-block">Decline</button>
           </div>
 
@@ -152,7 +138,6 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
             <input type="hidden" id="totalAmountHidden" name="totalAmount">
             <input type="hidden" id="customerIdHidden" name="customerId">
             <input type="hidden" id="orderNumberHidden" name="orderNumber">
-            <input type="hidden" id="customeridHidden" name="customerid">
           </div>
           <div class="modal-footer" id="modalFoot">
             <button type="submit" id="transact" class="btn btn-secondary btn-block">TRANSACT</button>
@@ -165,30 +150,6 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
 <script>
-  //event listener to see if reference number has content before approving
-  document.addEventListener("DOMContentLoaded", function() {
-    var inputReferenceNumber = document.getElementById('inputReferenceNumber');
-    var approveBtn = document.getElementById('approveBtn');
-
-    // Function to toggle button state and tooltip
-    function toggleApproveButton() {
-      if (inputReferenceNumber.value.trim().length === 0) {
-        approveBtn.disabled = true;
-        approveBtn.setAttribute('title', 'Please enter a reference number.'); // Show tooltip when disabled
-      } else {
-        approveBtn.disabled = false;
-        approveBtn.removeAttribute('title'); // Remove tooltip when enabled
-      }
-    }
-
-    // Initial check
-    toggleApproveButton();
-
-    // Listen for changes
-    inputReferenceNumber.addEventListener('input', toggleApproveButton);
-  });
-
-  //for printing invoice
   function downloadPDF(containerId) {
     var container = document.getElementById(containerId);
     if (container) {
@@ -221,7 +182,7 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
       // Create new elements to display the values outside of the original input elements
 
       var discountCodeDisplay = document.createElement('p');
-      discountCodeDisplay.textContent = `Discount: ${document.querySelector('#deductedAmount').textContent} Off`;
+      discountCodeDisplay.textContent = `Discount Code: ${discountCode}`;
       contentToPrint.appendChild(discountCodeDisplay);
 
       // display the payment method
@@ -655,7 +616,6 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
         document.getElementById('totalAmountHidden').value = totalAmount.toFixed(2);
         document.getElementById('customerIdHidden').value = customerId;
         document.getElementById('orderNumberHidden').value = orderNumber;
-        document.getElementById('customeridHidden').value = orderDetails.customer_id;
 
         //if order is for online payment approval remove unecessary information and show the preview of the proof of payment and a button that approves or decline the payment
         if (orderStatus == "pending") {
@@ -664,7 +624,6 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
           document.getElementById('proofPreview').style.display = 'block'; // Show the message
           document.getElementById('proofImg').src = '/uploads/' + orderDetails.payment_proof;
           document.getElementById('amountPaid').disabled = true;
-          document.getElementById('inputReferenceNumber').disabled = false;
         } else if (orderStatus == "notpayed") {
           document.getElementById('modalFoot').style.display = 'block';
           document.getElementById('payment_details').style.display = 'block';
