@@ -12,8 +12,9 @@ require __DIR__ . '/../../../PHPMailer/src/PHPMailer.php';
 require __DIR__ . '/../../../PHPMailer/src/SMTP.php';
 
 
-$db = App::resolve('Core\Database');
 
+$db = App::resolve('Core\Database');
+$coffee = $db->query("SELECT * FROM tblcoffeeshop")->find();
 $first_name = $_POST['firstname'];
 $last_name = $_POST['lastname'];
 $email = $_POST['email'];
@@ -44,7 +45,7 @@ foreach ($checkUsername as $usernameExist) {
 
 
 if (!empty($errors)) {
-  return view('views/registration/create.view.php', [
+  return view('registration/create.view.php', [
     'heading' => 'Register',
     'errors' => $errors,
     'coffee' => $coffee,
