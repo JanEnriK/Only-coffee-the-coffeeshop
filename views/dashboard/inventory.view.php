@@ -536,7 +536,7 @@
         <div class="overlay-content">
             <div class="info-box">
                 <button id="closePilferageFormBtn" class="button delete-button">X</button>
-                <h2>File Pilferage</h2>
+                <h2>File Inventory Shrinkage</h2>
                 <form method="post" action="/admin_dashboard/inventory" id="addInventoryForm" onsubmit="return confirm('Are you want to file this shrinkage?');">
                     <div class="form-group">
                         <!-- Hidden input to store the inventory_id -->
