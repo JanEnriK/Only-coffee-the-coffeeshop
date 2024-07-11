@@ -41,11 +41,22 @@ if (!empty($errors)) {
 // Generate a unique password reset token
 $token = bin2hex(random_bytes(5));
 
+date_default_timezone_set('Asia/Manila');
+$today = new DateTime('now', new DateTimeZone('Asia/Manila'));
+$created_at = $today->format('Y-m-d H:i:s');
+
+// Create a DateInterval object for 7 hours
+$interval = new DateInterval('PT7H');
+$today->add($interval);
+$expires_at = $today->format('Y-m-d H:i:s');
+
+
 // Save the token in the database with an expiration time (e.g., 1 hour)
-$db->query("INSERT INTO password_resets (email, token, expires_at) VALUES (:email, :token, :expires_at)", [
+$db->query("INSERT INTO password_resets (email, token, created_at,expires_at) VALUES (:email, :token,:created_at, :expires_at)", [
     'email' => $email,
     'token' => $token,
-    'expires_at' => date('Y-m-d H:i:s', strtotime('+7 hour')),
+    'created_at' => $created_at,
+    'expires_at' => $expires_at,
 ]);
 
 // Send password reset email

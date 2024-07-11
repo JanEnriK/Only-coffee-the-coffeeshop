@@ -345,6 +345,7 @@
         const selectSupplyItem = document.getElementById('supply_item');
         const lowStockOverlay = document.getElementById('lowStockOverlay');
         const unitIncrease = document.getElementById('unit_increase');
+        const idIncrease = document.getElementById('item_id_increase');
         const body = document.body;
 
         // Initially hide the add inventory form
@@ -363,6 +364,7 @@
                 for (let i = 0; i < options.length; i++) {
                     if (options[i].getAttribute('data-id-increase') === inventoryId) {
                         selectSupplyItem.selectedIndex = i;
+                        idIncrease.value = options[i].getAttribute('data-id-increase');
                         break;
                     }
                 }
@@ -445,14 +447,17 @@
         const selectElement = document.getElementById('new_item');
         const hiddenInput = document.getElementById('item_id');
         const unitSpan = document.getElementById('unit'); // Reference to the <span> element
+        const quantityInput = document.getElementById('shrinkage-quantity');
 
         selectElement.addEventListener('change', function() {
             const selectedOption = this.options[this.selectedIndex];
             const selectedItemId = selectedOption.getAttribute('data-id'); // Get the inventory_id from the data-id attribute
             const unitName = selectedOption.getAttribute('unit-name'); // Get the unit name from the unit-name attribute
+            const quantityLimit = selectedOption.getAttribute('deduct-limit');
 
             // Update the hidden input field with the selected item's ID
             hiddenInput.value = selectedItemId;
+            quantityInput.max = quantityLimit;
 
             // Update the <span> element with the unit name
             unitSpan.textContent = "Unit: " + unitName; // Update the content of the <span> element
@@ -544,17 +549,17 @@
 
                         <label for="new_item">Inventory Item:</label>
                         <select name="new_item" class="form-control" id="new_item" required>
-                            <option value="" selected disabled>Inventory Item:</option>
-                            <?php foreach ($inventoryData as $item) : ?>
-                                <option value="<?= $item['inventory_item'] ?>" data-id="<?= $item['inventory_id'] ?>" unit-name="<?= $item['unit'] ?>">
-                                    <?= $item['inventory_item'] ?> <!-- Display the inventory_item -->
+                            <option value="" selected disabled>Inventory Item - expiration(yyyy-mm-dd)</option>
+                            <?php foreach ($invItemData as $item) : ?>
+                                <option value="<?= $item['inventory_item'] ?>" data-id="<?= $item['tblinventoryitems_id'] ?>" unit-name="<?= $item['unit'] ?>" deduct-limit="<?= $item['quantity'] ?>">
+                                    <?= $item['inventory_item'] ?> - <?= $item['expiration_date'] ?> <!-- Display the inventory_item -->
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="form-group" style="width: 50%; display: inline-block;">
                         <label for="new_quantity">Quantity to reduce: </label>
-                        <input type="number" class="form-control" min="1" name="new_quantity" placeholder="Quantity" required>
+                        <input type="number" class="form-control" min="1" name="new_quantity" placeholder="Quantity" id="shrinkage-quantity" required>
                     </div>
                     <span style="color: grey; font-size: small;" id=unit></span>
                     <div class="form-group">
@@ -590,11 +595,12 @@
                         <label for="new_quantity">Quantity to add in supply: </label>
                         <input type="number" min="1" class="form-control" name="new_quantity" placeholder="Quantity: " required>
                     </div>
+                    <span style="color: grey; font-size: small;" id="unit_increase"></span>
                     <div class="form-group" style="width: 50%; display: inline-block;">
                         <label for="new_expiration">Expiration Date: </label>
                         <input type="date" class="form-control" name="new_expiration" placeholder="Expiration Date: " required>
                     </div>
-                    <span style="color: grey; font-size: small;" id="unit_increase"></span>
+
                     <button type="submit" name="submit_add_item" id="addInventoryButton" class="button add-button" style="width:100%;">Add</button>
                 </form>
             </div>
@@ -819,7 +825,9 @@
                                             <input type="hidden" name="edit_item_id" value="<?= $item['inventory_id'] ?>">
                                             <button type="button" class="button edit-button" onclick="toggleEditForm('editForm<?= $item['inventory_id'] ?>')">✎</button>
                                             <input type="hidden" name="delete_item_id" value="<?= $item['inventory_id'] ?>">
-                                            <button type="submit" name="submit_delete" class="button delete-button">✖</button>
+                                            <?php if ($item['quantity'] == 0) : ?>
+                                                <button type="submit" name="submit_delete" class="button delete-button">✖</button>
+                                            <?php endif; ?>
                                         </form>
                                     </td>
                                 </tr>

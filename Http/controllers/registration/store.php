@@ -60,12 +60,18 @@ if ($user) {
   die();
 } else {
   // Register the user
-  $db->query("INSERT INTO tblemployees(firstname, lastname, email, username, password) VALUES(:firstname, :lastname, :email, :username, :password)", [
+
+  date_default_timezone_set('Asia/Manila');
+  $today = new DateTime('now', new DateTimeZone('Asia/Manila'));
+  $today = $today->format('Y-m-d');
+
+  $db->query("INSERT INTO tblemployees(firstname, lastname, email, username, password,hiredate) VALUES(:firstname, :lastname, :email, :username, :password,:hiredate)", [
     'firstname' => $first_name,
     'lastname' => $last_name,
     'email' => $email,
     'username' => $username,
     'password' => password_hash($password, PASSWORD_BCRYPT),
+    'hiredate' => $today,
   ]);
   // Send welcome email
   $mail = new PHPMailer(true);

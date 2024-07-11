@@ -48,6 +48,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
+    date_default_timezone_set('Asia/Manila');
+    $today = new DateTime('now', new DateTimeZone('Asia/Manila'));
+    $today = $today->format('Y-m-d H:i:s');
+
+
     // Check if image file is a actual image or fake image
     $check = @getimagesize($_FILES["proofOfPayment"]["tmp_name"]);
 
@@ -94,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
           if (empty($errors)) {
             // Generate a unique order number for each item in the cart
-            $db->query("INSERT INTO tblorders(order_type, quantity, base_coffee_id, customer_id, order_number, order_status, payment_proof, discount) VALUES(:order_type, :quantity,:base_coffee_id, :customer_id, :order_number, :order_status, :payment_proof, :discount)", ['order_type' => $_POST['order_type'], 'quantity' => $_POST['quantity'], 'base_coffee_id' => $_POST['base_coffee_id'], 'customer_id' => $_SESSION['user']['id'], 'order_number' => $order_number, 'order_status' => "pending", 'payment_proof' => $upload_file, 'discount' => $discountPercent]);
+            $db->query("INSERT INTO tblorders(order_type, quantity, base_coffee_id, customer_id, order_number, order_status, payment_proof, discount,order_datetime) VALUES(:order_type, :quantity,:base_coffee_id, :customer_id, :order_number, :order_status, :payment_proof, :discount,:order_datetime)", ['order_type' => $_POST['order_type'], 'quantity' => $_POST['quantity'], 'base_coffee_id' => $_POST['base_coffee_id'], 'customer_id' => $_SESSION['user']['id'], 'order_number' => $order_number, 'order_status' => "pending", 'payment_proof' => $upload_file, 'discount' => $discountPercent, 'order_datetime' => $today]);
           }
         }
       }
@@ -122,7 +127,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       if (empty($errors)) {
         // Generate a unique order number for each item in the cart
-        $db->query("INSERT INTO tblorders(order_type, quantity, base_coffee_id, customer_id, order_number, order_status, discount) VALUES(:order_type, :quantity,:base_coffee_id, :customer_id, :order_number, :order_status, :discount)", ['order_type' => $_POST['order_type'], 'quantity' => $_POST['quantity'], 'base_coffee_id' => $_POST['base_coffee_id'], 'customer_id' => $_SESSION['user']['id'], 'order_number' => $order_number, 'order_status' => "notpayed", 'discount' => $discountPercent]);
+        $db->query("INSERT INTO tblorders(order_type, quantity, base_coffee_id, customer_id, order_number, order_status, discount,order_datetime) VALUES(:order_type, :quantity,:base_coffee_id, :customer_id, :order_number, :order_status, :discount,:order_datetime)", ['order_type' => $_POST['order_type'], 'quantity' => $_POST['quantity'], 'base_coffee_id' => $_POST['base_coffee_id'], 'customer_id' => $_SESSION['user']['id'], 'order_number' => $order_number, 'order_status' => "notpayed", 'discount' => $discountPercent, 'order_datetime' => $today]);
       }
     }
   }

@@ -4,6 +4,14 @@ use Core\App;
 use Core\Database;
 
 $db = App::resolve('Core\Database');
+
+
+date_default_timezone_set('Asia/Manila');
+$today = new DateTime('now', new DateTimeZone('Asia/Manila'));
+$today = $today->format('Y-m-d H:i:s');
+
+$todayOrderitem = new DateTime('now', new DateTimeZone('Asia/Manila'));
+$todayOrderitem = $todayOrderitem->format('Y-m-d H:i:s');
 //process approve and decline from online payment
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['action'])) {
@@ -13,12 +21,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $orderNumber = $_POST['orderNumber'];
             $paymentOnline = $_POST['inputReferenceNumber'];
             // Insert the payment details into the database (ONLINE)
-            $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber, reference_no) VALUES(:total_amount, :payment_type, :customer_id, :order_number,:reference_no)", [
+            $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber, reference_no, order_datetime) VALUES(:total_amount, :payment_type, :customer_id, :order_number,:reference_no, :order_datetime)", [
                 'total_amount' => $totalAmount,
                 'payment_type' => "online",
                 'customer_id' => $customerId,
                 'order_number' => $orderNumber,
                 'reference_no' => $paymentOnline,
+                'order_datetime' => $today,
             ]);
             //update status of the order
             $db->query("UPDATE `tblorders` SET `order_status` = 'payed' WHERE order_number = ?  AND order_status = 'pending'", [$orderNumber]);
@@ -35,12 +44,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 [$orderNumber, '%' . $date . '%']
             )->get();
             foreach ($orderedItems as $items) {
-                $db->query("INSERT INTO tblorderitem(quantity, status, orderid, productid, customerid) VALUES(:quantity, :status, :orderid, :productid, :customerid)", [
+                $db->query("INSERT INTO tblorderitem(quantity, status, orderid, productid, customerid,date_time) VALUES(:quantity, :status, :orderid, :productid, :customerid,:date_time)", [
                     'quantity' => $items['quantity'],
                     'status' => "active",
                     'orderid' => $orderNumber,
                     'productid' => $items['product_id'],
                     'customerid' => $customerId,
+                    'date_time' => $todayOrderitem,
                 ]);
             }
             $_SESSION['orderSubmited']['ordernumber'] = $orderNumber;
@@ -64,11 +74,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Check which payment method was selected
         if (!empty($paymentCash)) {
             // Insert the payment details into the database (CASH)
-            $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber) VALUES(:total_amount, :payment_type, :customer_id, :order_number)", [
+            $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber, order_datetime) VALUES(:total_amount, :payment_type, :customer_id, :order_number, :order_datetime)", [
                 'total_amount' => $totalAmount,
                 'payment_type' => "cash",
                 'customer_id' => $customerId,
                 'order_number' => $orderNumber,
+                'order_datetime' => $today,
             ]);
             //update status of the order
             $db->query("UPDATE `tblorders` SET `order_status` = 'payed' WHERE order_number = ?  AND order_status = 'notpayed'", [$orderNumber]);
@@ -84,22 +95,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 [$orderNumber, '%' . $date . '%']
             )->get();
             foreach ($orderedItems as $items) {
-                $db->query("INSERT INTO tblorderitem(quantity, status, orderid, productid,customerid) VALUES(:quantity, :status, :orderid, :productid,:customerid)", [
+                $db->query("INSERT INTO tblorderitem(quantity, status, orderid, productid,customerid,date_time) VALUES(:quantity, :status, :orderid, :productid,:customerid,:date_time)", [
                     'quantity' => $items['quantity'],
                     'status' => "active",
                     'orderid' => $orderNumber,
                     'productid' => $items['product_id'],
                     'customerid' => $customerId,
+                    'date_time' => $todayOrderitem,
                 ]);
             }
         } elseif (!empty($paymentOnline)) {
             // Insert the payment details into the database (ONLINE)
-            $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber, reference_no) VALUES(:total_amount, :payment_type, :customer_id, :order_number,:reference_no)", [
+            $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber, reference_no, order_datetime) VALUES(:total_amount, :payment_type, :customer_id, :order_number,:reference_no, :order_datetime)", [
                 'total_amount' => $totalAmount,
                 'payment_type' => "online",
                 'customer_id' => $customerId,
                 'order_number' => $orderNumber,
                 'reference_no' => $paymentOnline,
+                'order_datetime' => $today,
             ]);
             //update status of the order
             $db->query("UPDATE `tblorders` SET `order_status` = 'payed' WHERE order_number = ?  AND order_status = 'notpayed'", [$orderNumber]);
@@ -117,12 +130,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             )->get();
 
             foreach ($orderedItems as $items) {
-                $db->query("INSERT INTO tblorderitem(quantity, status, orderid, productid,customerid) VALUES(:quantity, :status, :orderid, :productid,:customerid)", [
+                $db->query("INSERT INTO tblorderitem(quantity, status, orderid, productid,customerid,date_time) VALUES(:quantity, :status, :orderid, :productid,:customerid,:date_time)", [
                     'quantity' => $items['quantity'],
                     'status' => "active",
                     'orderid' => $orderNumber,
                     'productid' => $items['product_id'],
                     'customerid' => $customerId,
+                    'date_time' => $todayOrderitem,
                 ]);
             }
         } else {

@@ -159,69 +159,151 @@ if (isset($_SESSION['signupSuccess']) && $_SESSION['signupSuccess'] === true) {
         </div>
         <div class="row">
             <div class="col-lg-6">
-                <div class="row align-items-center mb-5">
-                    <div class="col-4 col-sm-3">
-                        <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[0]['image'] ?>" alt="">
+                <?php if (isset($products[0]['image']) && isset($products[0]['product_name']) && isset($products[0]['product_id']) && isset($products[0]['price']) && isset($products[0]['product_description'])) : ?>
+                    <div class="row align-items-center mb-5">
+                        <div class="col-4 col-sm-3">
+                            <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[0]['image'] ?>" alt="">
+                        </div>
+                        <div class="col-8 col-sm-9">
+                            <h4><?= $products[0]['product_name'] ?></h4>
+                            <p class="m-0"><?= $products[0]['product_description'] ?></p>
+                            <a href="/show_product?id=<?= $products[0]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[0]['price'] ?></a>
+                        </div>
                     </div>
-                    <div class="col-8 col-sm-9">
-                        <h4><?= $products[0]['product_name'] ?></h4>
-                        <p class="m-0"><?= $products[0]['product_description'] ?></p>
-                        <a href="/show_product?id=<?= $products[0]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[0]['price'] ?></a>
+                <?php else : ?>
+                    <div class="row align-items-center mb-5">
+                        <div class="col-4 col-sm-3">
+                            <img>
+                        </div>
+                        <div class="col-8 col-sm-9">
+                            <h4></h4>
+                            <p class="m-0"></p>
+                            <a></a>
+                        </div>
                     </div>
-                </div>
-                <div class="row align-items-center mb-5">
-                    <div class="col-4 col-sm-3">
-                        <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[1]['image'] ?>" alt="">
+                <?php endif; ?>
+
+                <?php if (isset($products[1]['image']) && isset($products[1]['product_name']) && isset($products[1]['product_id']) && isset($products[1]['price']) && isset($products[1]['product_description'])) : ?>
+                    <div class="row align-items-center mb-5">
+                        <div class="col-4 col-sm-3">
+                            <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[1]['image'] ?>" alt="">
+                        </div>
+                        <div class="col-8 col-sm-9">
+                            <h4><?= $products[1]['product_name'] ?></h4>
+                            <p class="m-0"><?= $products[1]['product_description'] ?></p>
+                            <a href="/show_product?id=<?= $products[1]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[1]['price'] ?></a>
+                        </div>
                     </div>
-                    <div class="col-8 col-sm-9">
-                        <h4><?= $products[1]['product_name'] ?></h4>
-                        <p class="m-0"><?= $products[1]['product_description'] ?></p>
-                        <a href="/show_product?id=<?= $products[1]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[1]['price'] ?></a>
+                <?php else : ?>
+                    <div class="row align-items-center mb-5">
+                        <div class="col-4 col-sm-3">
+                            <img>
+                        </div>
+                        <div class="col-8 col-sm-9">
+                            <h4></h4>
+                            <p class="m-0"></p>
+                            <a></a>
+                        </div>
                     </div>
-                </div>
-                <div class="row align-items-center mb-5">
-                    <div class="col-4 col-sm-3">
-                        <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[2]['image'] ?>" alt="">
+                <?php endif; ?>
+
+                <?php if (isset($products[2]['image']) && isset($products[2]['product_name']) && isset($products[2]['product_id']) && isset($products[2]['price']) && isset($products[2]['product_description'])) : ?>
+                    <div class="row align-items-center mb-5">
+                        <div class="col-4 col-sm-3">
+                            <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[2]['image'] ?>" alt="">
+                        </div>
+                        <div class="col-8 col-sm-9">
+                            <h4><?= $products[2]['product_name'] ?></h4>
+                            <p class="m-0"><?= $products[2]['product_description'] ?></p>
+                            <a href="/show_product?id=<?= $products[2]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[2]['price'] ?></a>
+                        </div>
                     </div>
-                    <div class="col-8 col-sm-9">
-                        <h4><?= $products[2]['product_name'] ?></h4>
-                        <p class="m-0"><?= $products[2]['product_description'] ?></p>
-                        <a href="/show_product?id=<?= $products[2]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[2]['price'] ?></a>
+                <?php else : ?>
+                    <div class="row align-items-center mb-5">
+                        <div class="col-4 col-sm-3">
+                            <img>
+                        </div>
+                        <div class="col-8 col-sm-9">
+                            <h4></h4>
+                            <p class="m-0"></p>
+                            <a></a>
+                        </div>
                     </div>
-                </div>
+                <?php endif; ?>
             </div>
 
             <div class="col-lg-6">
-                <div class="row align-items-center mb-5">
-                    <div class="col-4 col-sm-3">
-                        <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[3]['image'] ?>" alt="">
+                <?php if (isset($products[3]['image']) && isset($products[3]['product_name']) && isset($products[3]['product_id']) && isset($products[3]['price']) && isset($products[3]['product_description'])) : ?>
+                    <div class="row align-items-center mb-5">
+                        <div class="col-4 col-sm-3">
+                            <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[3]['image'] ?>" alt="">
+                        </div>
+                        <div class="col-8 col-sm-9">
+                            <h4><?= $products[3]['product_name'] ?></h4>
+                            <p class="m-0"><?= $products[3]['product_description'] ?></p>
+                            <a href="/show_product?id=<?= $products[3]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[3]['price'] ?></a>
+                        </div>
                     </div>
-                    <div class="col-8 col-sm-9">
-                        <h4><?= $products[3]['product_name'] ?></h4>
-                        <p class="m-0"><?= $products[3]['product_description'] ?></p>
-                        <a href="/show_product?id=<?= $products[3]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[3]['price'] ?></a>
+                <?php else : ?>
+                    <div class="row align-items-center mb-5">
+                        <div class="col-4 col-sm-3">
+                            <img>
+                        </div>
+                        <div class="col-8 col-sm-9">
+                            <h4></h4>
+                            <p class="m-0"></p>
+                            <a></a>
+                        </div>
                     </div>
-                </div>
-                <div class="row align-items-center mb-5">
-                    <div class="col-4 col-sm-3">
-                        <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[4]['image'] ?>" alt="">
+                <?php endif; ?>
+
+                <?php if (isset($products[4]['image']) && isset($products[4]['product_name']) && isset($products[4]['product_id']) && isset($products[4]['price']) && isset($products[4]['product_description'])) : ?>
+                    <div class="row align-items-center mb-5">
+                        <div class="col-4 col-sm-3">
+                            <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[4]['image'] ?>" alt="">
+                        </div>
+                        <div class="col-8 col-sm-9">
+                            <h4><?= $products[4]['product_name'] ?></h4>
+                            <p class="m-0"><?= $products[4]['product_description'] ?></p>
+                            <a href="/show_product?id=<?= $products[4]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[4]['price'] ?></a>
+                        </div>
                     </div>
-                    <div class="col-8 col-sm-9">
-                        <h4><?= $products[4]['product_name'] ?></h4>
-                        <p class="m-0"><?= $products[4]['product_description'] ?></p>
-                        <a href="/show_product?id=<?= $products[4]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[4]['price'] ?></a>
+                <?php else : ?>
+                    <div class="row align-items-center mb-5">
+                        <div class="col-4 col-sm-3">
+                            <img>
+                        </div>
+                        <div class="col-8 col-sm-9">
+                            <h4></h4>
+                            <p class="m-0"></p>
+                            <a></a>
+                        </div>
                     </div>
-                </div>
-                <div class="row align-items-center mb-5">
-                    <div class="col-4 col-sm-3">
-                        <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[5]['image'] ?>" alt="">
+                <?php endif; ?>
+
+                <?php if (isset($products[5]['image']) && isset($products[5]['product_name']) && isset($products[5]['product_id']) && isset($products[5]['price']) && isset($products[5]['product_description'])) : ?>
+                    <div class="row align-items-center mb-5">
+                        <div class="col-4 col-sm-3">
+                            <img style="width: 100%; height: 110px; object-fit: cover;" class="w-100 rounded-circle mb-3 mb-sm-0" src="/uploads/<?= $products[5]['image'] ?>" alt="">
+                        </div>
+                        <div class="col-8 col-sm-9">
+                            <h4><?= $products[5]['product_name'] ?></h4>
+                            <p class="m-0"><?= $products[5]['product_description'] ?></p>
+                            <a href="/show_product?id=<?= $products[5]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[5]['price'] ?></a>
+                        </div>
                     </div>
-                    <div class="col-8 col-sm-9">
-                        <h4><?= $products[5]['product_name'] ?></h4>
-                        <p class="m-0"><?= $products[5]['product_description'] ?></p>
-                        <a href="/show_product?id=<?= $products[5]['product_id'] ?>" class="pt-2 btn btn-primary">₱<?= $products[5]['price'] ?></a>
+                <?php else : ?>
+                    <div class="row align-items-center mb-5">
+                        <div class="col-4 col-sm-3">
+                            <img>
+                        </div>
+                        <div class="col-8 col-sm-9">
+                            <h4></h4>
+                            <p class="m-0"></p>
+                            <a></a>
+                        </div>
                     </div>
-                </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

@@ -71,6 +71,9 @@ function removeExpired($pdo)
     $today = new DateTime('now', new DateTimeZone('Asia/Manila'));
     $today = $today->format('Y-m-d');
 
+    $todayInventoryReport = new DateTime('now', new DateTimeZone('Asia/Manila'));
+    $todayInventoryReport = $todayInventoryReport->format('Y-m-d H:i:s');
+
     foreach ($inventoryitemsData as $data) {
         $expirationDate = $data['expiration_date'];
         if ($expirationDate <= $today) {
@@ -91,7 +94,7 @@ function removeExpired($pdo)
             $recordType = "Expiration Auto Deduct";
             $quantityNegative = '-' . $data['quantity'];
 
-            $sqlInsertReport = "INSERT INTO tblinventoryreport (inventory_item, inventory_id, quantity, unit, record_type, reason) VALUES (:inventoryItem, :inventory_id, :quantity, :unit, :record_type, :reason)";
+            $sqlInsertReport = "INSERT INTO tblinventoryreport (inventory_item, inventory_id, quantity, unit, record_type, reason,datetime) VALUES (:inventoryItem, :inventory_id, :quantity, :unit, :record_type, :reason,:datetime)";
             $statementInsertReport = $pdo->prepare($sqlInsertReport);
             $statementInsertReport->bindParam(':inventoryItem',  $inventoryData['inventory_item']);
             $statementInsertReport->bindParam(':inventory_id', $data['inventory_id']);
@@ -99,6 +102,7 @@ function removeExpired($pdo)
             $statementInsertReport->bindParam(':unit', $inventoryData['unit']);
             $statementInsertReport->bindParam(':reason', $reason);
             $statementInsertReport->bindParam(':record_type', $recordType);
+            $statementInsertReport->bindParam(':datetime', $todayInventoryReport);
             $statementInsertReport->execute();
         }
     }
@@ -483,6 +487,9 @@ if (isset($_POST['action'])) {
             $itemDeductStmt->execute();
             $itemDeduct = $itemDeductStmt->fetchAll(PDO::FETCH_ASSOC);
 
+            $todayInventoryReport = new DateTime('now', new DateTimeZone('Asia/Manila'));
+            $todayInventoryReport = $todayInventoryReport->format('Y-m-d H:i:s');
+
             //remove expired and zero records
             removeExpired($pdo);
             removeZeroQuantity($pdo);
@@ -560,7 +567,7 @@ if (isset($_POST['action'])) {
 
                 // Insert data into tblInventoryReports"
                 $recordType = "Product Preparation Deduct";
-                $sqlInsertReport = "INSERT INTO tblinventoryreport (inventory_item, inventory_id, quantity, unit, record_type, reason) VALUES (:inventoryItem, :itemID, :quantityString, :unit, :record_type, :reason)";
+                $sqlInsertReport = "INSERT INTO tblinventoryreport (inventory_item, inventory_id, quantity, unit, record_type, reason,datetime) VALUES (:inventoryItem, :itemID, :quantityString, :unit, :record_type, :reason,:datetime)";
                 $statementInsertReport = $pdo->prepare($sqlInsertReport);
                 $statementInsertReport->bindParam(':inventoryItem', $fetchInventory['inventory_item']);
                 $statementInsertReport->bindParam(':itemID', $deduct['inventory_id']);
@@ -568,6 +575,7 @@ if (isset($_POST['action'])) {
                 $statementInsertReport->bindParam(':unit', $fetchInventory['unit']); // Bind the unit directly
                 $statementInsertReport->bindParam(':record_type', $recordType);
                 $statementInsertReport->bindParam(':reason', $reason);
+                $statementInsertReport->bindParam(':datetime', $todayInventoryReport);
                 $statementInsertReport->execute();
             }
 

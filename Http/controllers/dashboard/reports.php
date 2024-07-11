@@ -24,18 +24,6 @@ if (isset($_GET['get_sales_data'])) {
 
     $salesQuery = "SELECT * FROM tblpayment WHERE 1";
 
-    // switch ($filter) {
-    //     case 'cash':
-    //         $query .= " AND paymenttype = 'Cash'";
-    //         break;
-    //     case 'card':
-    //         $query .= " AND paymenttype = 'Card'";
-    //         break;
-
-    //     default:
-    //         break;
-    // }
-
     if ($startDate !== null && $endDate !== null) {
       $salesQuery .= " AND DATE(order_datetime) BETWEEN :start_date AND :end_date";
     }
@@ -50,7 +38,9 @@ if (isset($_GET['get_sales_data'])) {
 
     $stmt->execute();
     $salesData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    error_log("Sales Data: " . json_encode($salesData));
     echo json_encode($salesData);
+
     exit();
   } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();

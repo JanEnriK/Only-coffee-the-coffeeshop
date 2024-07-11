@@ -239,19 +239,20 @@ function fetchDataAndDisplay(reportType, filterValue, fetchedStartDate, fetchedE
 
 function displaySalesReport(data) {
   $("#tableBodySales").empty();
+  console.log(data);
   
   // Sort data based on payment type
-  data.sort(function(a, b) {
-    var paymentTypeA = a.paymenttype.toUpperCase(); 
-    var paymentTypeB = b.paymenttype.toUpperCase(); 
-    if (paymentTypeA < paymentTypeB) {
-      return -1;
-    } else if (paymentTypeA > paymentTypeB) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
+  // data.sort(function(a, b) {
+  //   var paymentTypeA = a.paymenttype.toUpperCase(); 
+  //   var paymentTypeB = b.paymenttype.toUpperCase(); 
+  //   if (paymentTypeA < paymentTypeB) {
+  //     return -1;
+  //   } else if (paymentTypeA > paymentTypeB) {
+  //     return 1;
+  //   } else {
+  //     return 0;
+  //   }
+  // });
 
   // Iterate through sorted data and append rows to the table
   for (var i = 0; i < data.length; i++) {

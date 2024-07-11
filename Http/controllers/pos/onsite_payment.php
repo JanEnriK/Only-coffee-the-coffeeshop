@@ -12,6 +12,14 @@ $paymentCash = $_POST['cashAmount'];
 $paymentOnline = $_POST['referenceNumber'];
 $productIds = $_POST['productIds'];
 $quantities = $_POST['quantities'];
+date_default_timezone_set('Asia/Manila');
+$today = new DateTime('now', new DateTimeZone('Asia/Manila'));
+$today = $today->format('Y-m-d H:i:s');
+
+$todayOrderitem = new DateTime('now', new DateTimeZone('Asia/Manila'));
+$todayOrderitem = $todayOrderitem->format('Y-m-d H:i:s');
+
+
 
 // Determine the payment method
 $paymentMethod = !empty($paymentCash) ? 'cash' : (!empty($paymentOnline) ? 'online' : 'unknown');
@@ -52,23 +60,25 @@ for ($i = 0; $i < count($productIds); $i++) {
     $quantity = $quantities[$i];
 
     // Insert each order item
-    $db->query("INSERT INTO tblorders(order_type, quantity, base_coffee_id, customer_id, order_number, order_status) VALUES(:order_type, :quantity, :base_coffee_id, :customer_id, :order_number, :order_status)", [
+    $db->query("INSERT INTO tblorders(order_type, quantity, base_coffee_id, customer_id, order_number, order_status,order_datetime) VALUES(:order_type, :quantity, :base_coffee_id, :customer_id, :order_number, :order_status,:order_datetime)", [
         'order_type' => 'take-out',
         'quantity' => $quantity,
         'base_coffee_id' => $productId,
         'customer_id' => $employeeID,
         'order_number' => $order_number,
-        'order_status' => "payed"
+        'order_status' => "payed",
+        'order_datetime' => $today,
     ]);
 }
 
 if ($paymentMethod === "cash") {
     // Insert the payment details into the database (CASH)
-    $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber) VALUES(:total_amount, :payment_type, :customer_id, :order_number)", [
+    $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber,order_datetime) VALUES(:total_amount, :payment_type, :customer_id, :order_number,:order_datetime)", [
         'total_amount' => $totalAmount,
         'payment_type' => "cash",
         'customer_id' => $employeeID,
         'order_number' => $order_number,
+        'order_datetime' => $today,
     ]);
 
     date_default_timezone_set('Asia/Manila');
@@ -78,22 +88,24 @@ if ($paymentMethod === "cash") {
     //pass the order to order items for preparation
     $orderedItems = $db->query("SELECT * FROM tblorders JOIN tblproducts ON base_coffee_id = product_id WHERE order_status = 'payed' AND order_number = ? and DATE(order_datetime) = ?;", [$order_number, $today])->get();
     foreach ($orderedItems as $items) {
-        $db->query("INSERT INTO tblorderitem(quantity, status, orderid, productid, customerid) VALUES(:quantity, :status, :orderid, :productid,:customerid)", [
+        $db->query("INSERT INTO tblorderitem(quantity, status, orderid, productid, customerid,date_time) VALUES(:quantity, :status, :orderid, :productid,:customerid,:date_time)", [
             'quantity' => $items['quantity'],
             'status' => "active",
             'orderid' => $order_number,
             'productid' => $items['product_id'],
             'customerid' => $employeeID,
+            'date_time' => $todayOrderitem,
         ]);
     }
 } else {
     // Insert the payment details into the database (ONLINE)
-    $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber,reference_no) VALUES(:total_amount, :payment_type, :customer_id, :order_number, :reference_no)", [
+    $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber,reference_no, order_datetime) VALUES(:total_amount, :payment_type, :customer_id, :order_number, :reference_no, :order_datetime)", [
         'total_amount' => $totalAmount,
         'payment_type' => "online",
         'customer_id' => $employeeID,
         'order_number' => $order_number,
         'reference_no' => $paymentOnline,
+        'order_datetime' => $today,
     ]);
 
     date_default_timezone_set('Asia/Manila');
@@ -102,13 +114,15 @@ if ($paymentMethod === "cash") {
 
     //pass the order to order items for preparation
     $orderedItems = $db->query("SELECT * FROM tblorders JOIN tblproducts ON base_coffee_id = product_id WHERE order_status = 'payed' AND order_number = ? AND DATE(order_datetime) = ?;", [$order_number, $today])->get();
+
     foreach ($orderedItems as $items) {
-        $db->query("INSERT INTO tblorderitem(quantity, status, orderid, productid,customerid) VALUES(:quantity, :status, :orderid, :productid, :customerid)", [
+        $db->query("INSERT INTO tblorderitem(quantity, status, orderid, productid,customerid,date_time) VALUES(:quantity, :status, :orderid, :productid, :customerid,:date_time)", [
             'quantity' => $items['quantity'],
             'status' => "active",
             'orderid' => $order_number,
             'productid' => $items['product_id'],
             'customerid' => $employeeID,
+            'date_time' => $todayOrderitem,
         ]);
     }
 }
