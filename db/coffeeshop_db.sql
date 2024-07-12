@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 11, 2024 at 09:40 AM
+-- Generation Time: Jul 12, 2024 at 03:35 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -191,7 +191,7 @@ CREATE TABLE `tblemployees` (
 
 INSERT INTO `tblemployees` (`employeeID`, `firstname`, `lastname`, `email`, `position`, `hiredate`, `username`, `password`) VALUES
 (1, 'Super', 'Admin', 'superadmin@gmail.com', 'admin', '2024-04-01', 'superadmin', '$2y$10$ExJqrs6/0hYlS7mTyFwbN.ja1XeJAb78OZExDw5UxO2PAk91YL2yu'),
-(34, 'Jan', 'Manuel', 'jan@gmail.com', 'admin', '2024-04-23', 'enrique', '$2y$10$Gfn/r1DlFMRZ3.46xbYTcuGN38wrY4EdxnMEEtemBlY0VqfgKKY3y'),
+(34, 'Jan', 'Manuel', 'manuel.janenrique@ue.edu.ph', 'admin', '2024-04-23', 'enrique', '$2y$10$Gfn/r1DlFMRZ3.46xbYTcuGN38wrY4EdxnMEEtemBlY0VqfgKKY3y'),
 (35, 'test', 'test3', 'test@gmail.com', 'guest', '2024-04-23', 'testing', '$2y$10$FO9R0sczJKEUWd.AO7Ga8O0UXDHjL2v9UsKGU6l39ASpA7Z4WB85C'),
 (39, 'Juan', 'Luna', 'juan@gmail.com', 'guest', '2024-04-23', 'juan', '$2y$10$uerZ8nU9of.PLLelQqufcec3cz5ubJL.mbCdGGbdFTYfWLx5Y7Cvm'),
 (42, 'JP', 'Olarte', 'jp@gmail.com', 'admin', '2024-04-25', 'jp', '$2y$10$VVzxH5W.aTdBNNse4dzwRe4/iMvJ50hS.8rvsx.lztgH8kBv0S0KG'),
@@ -224,7 +224,8 @@ INSERT INTO `tblfeedback` (`feedbackid`, `title`, `feedback_desc`, `feedback_dat
 (22, 'Fast Service', 'The service here in only coffee has one of the fastest service in the coffee industry.', '2024-04-26 20:21:17', 42),
 (23, 'Strong coffee', 'Coffee that\'s been served to me is too strong', '2024-04-27 21:06:59', 44),
 (24, 'good environment', 'the venue of the shop has a good ambience', '2024-05-02 16:54:06', 66),
-(25, 'Quality Ingredients', 'Ingredients used are authentic and rare.', '2024-07-04 22:03:48', 34);
+(25, 'Quality Ingredients', 'Ingredients used are authentic and rare.', '2024-07-04 22:03:48', 34),
+(26, 'Alot of flavor profile', 'The coffee shop offers various product with different flavor profiles.', '2024-07-11 16:28:14', 34);
 
 -- --------------------------------------------------------
 
@@ -248,20 +249,17 @@ CREATE TABLE `tblinventory` (
 
 INSERT INTO `tblinventory` (`inventory_id`, `inventory_item`, `item_type`, `quantity`, `unit`, `reorder_point`, `status`) VALUES
 (3, 'Powdered Sugar', 'Sweetener', 1000, 'grams', 100, 'In Stock'),
-(4, 'Arrabica Coffee Bean', 'Coffee Bean', 955, 'grams', 500, 'In Stock'),
-(5, 'Liberica Coffee Bean', 'Coffee Bean', 1930, 'grams', 500, 'In Stock'),
-(6, 'Oat Milk', 'Milk', 910, 'ml', 500, 'In Stock'),
 (7, 'Soy Milk', 'Milk', 965, 'ml', 500, 'In Stock'),
 (8, 'Pearls', 'Sinker', 1000, 'grams', 500, 'In Stock'),
 (9, 'Nata De Coco', 'Sinker', 2000, 'grams', 500, 'In Stock'),
-(12, 'Cream', 'Toppings', 995, 'grams', 500, 'In Stock'),
-(13, 'Marshmallows', 'Toppings', 1000, 'grams', 500, 'In Stock'),
-(14, 'Caramel', 'Flavor', 973, 'ml', 500, 'In Stock'),
-(15, 'Matcha', 'Flavor', 1500, 'grams', 500, 'In Stock'),
+(12, 'Cream', 'Toppings', 1000, 'grams', 500, 'In Stock'),
+(13, 'Marshmallows', 'Toppings', 990, 'grams', 500, 'In Stock'),
+(14, 'Caramel', 'Flavor', 1453, 'ml', 500, 'In Stock'),
+(15, 'Matcha', 'Flavor', 1490, 'grams', 500, 'In Stock'),
 (16, 'Oreo Cookies', 'Flavor', 1000, 'grams', 500, 'In Stock'),
 (48, 'Brown Sugar', 'Sweetener', 1000, 'grams', 500, 'In Stock'),
 (50, 'Condensed Milk', 'Milk', 1000, 'ml', 500, 'In Stock'),
-(51, 'Robusta Coffee Bean', 'Coffee Bean', 1420, 'grams', 500, 'In Stock');
+(51, 'Robusta Coffee Bean', 'Coffee Bean', 1359, 'grams', 500, 'In Stock');
 
 -- --------------------------------------------------------
 
@@ -281,26 +279,34 @@ CREATE TABLE `tblinventoryitems` (
 --
 
 INSERT INTO `tblinventoryitems` (`tblinventoryitems_id`, `quantity`, `expiration_date`, `inventory_id`) VALUES
-(1, 1000, '2024-12-31', 51),
-(23, 420, '2024-07-31', 51),
+(1, 999, '2024-12-31', 51),
+(23, 360, '2024-07-31', 51),
 (25, 1000, '2024-12-31', 3),
-(26, 955, '2024-12-31', 4),
-(27, 930, '2024-12-31', 5),
-(28, 910, '2024-12-31', 6),
 (29, 965, '2024-12-31', 7),
 (30, 1000, '2024-12-31', 8),
 (31, 1000, '2024-12-31', 9),
 (32, 1000, '2024-12-31', 9),
-(33, 995, '2024-12-31', 12),
-(34, 1000, '2024-12-31', 13),
-(35, 973, '2024-12-31', 14),
+(34, 990, '2024-12-31', 13),
+(35, 473, '2024-12-31', 14),
 (36, 500, '2024-12-31', 15),
 (37, 1000, '2024-12-31', 16),
 (38, 1000, '2024-12-31', 48),
 (39, 1000, '2024-12-31', 50),
-(40, 1000, '2024-12-31', 5),
 (41, 1000, '2024-11-30', 0),
-(42, 1000, '2024-09-30', 15);
+(42, 990, '2024-09-30', 15),
+(43, 1000, '2024-07-31', 0),
+(44, 1000, '2024-07-31', 0),
+(45, 1000, '2024-07-31', 10),
+(46, 1000, '2024-12-31', 10),
+(48, 1000, '2024-08-10', 10),
+(49, 1000, '2024-08-10', 10),
+(50, 1000, '2024-08-10', 10),
+(51, 1000, '2024-08-10', 10),
+(52, 1000, '2024-08-10', 10),
+(53, 1000, '2024-08-10', 10),
+(54, 1000, '2024-08-10', 10),
+(55, 980, '2024-07-31', 14),
+(56, 1000, '2024-12-31', 12);
 
 -- --------------------------------------------------------
 
@@ -316,95 +322,22 @@ CREATE TABLE `tblinventoryreport` (
   `unit` varchar(20) NOT NULL,
   `record_type` varchar(255) NOT NULL,
   `reason` varchar(255) NOT NULL,
-  `datetime` datetime NOT NULL DEFAULT current_timestamp()
+  `datetime` datetime NOT NULL DEFAULT current_timestamp(),
+  `employee_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tblinventoryreport`
 --
 
-INSERT INTO `tblinventoryreport` (`inventory_report_id`, `inventory_item`, `inventory_id`, `quantity`, `unit`, `record_type`, `reason`, `datetime`) VALUES
-(59, 'Arrabica Coffee Bean', 4, -10, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced Special Cappuccinoo', '2024-07-02 23:22:33'),
-(60, 'Caramel', 14, -12, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced Special Cappuccinoo', '2024-07-02 23:22:33'),
-(61, 'Oat Milk', 6, -20, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced Special Cappuccinoo', '2024-07-02 23:22:33'),
-(62, 'Marshmallows', 13, -5, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced White Chocolate mocha', '2024-07-02 23:23:52'),
-(63, 'Caramel', 14, -10, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced White Chocolate mocha', '2024-07-02 23:23:53'),
-(64, 'Arrabica Coffee Bean', 4, -10, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced White Chocolate mocha', '2024-07-02 23:23:53'),
-(65, 'Arrabica Coffee Bean', 4, -5, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced caffe latte', '2024-07-02 23:23:53'),
-(66, 'Oat Milk', 6, -10, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced caffe latte', '2024-07-02 23:23:53'),
-(67, 'Arrabica Coffee Bean', 4, -10, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced Special Cappuccinoo', '2024-07-02 23:23:53'),
-(68, 'Caramel', 14, -12, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced Special Cappuccinoo', '2024-07-02 23:23:53'),
-(69, 'Oat Milk', 6, -20, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced Special Cappuccinoo', '2024-07-02 23:23:54'),
-(70, 'Caramel', 14, -5, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Salted Caramel Cold Breww', '2024-07-02 23:25:45'),
-(71, 'Arrabica Coffee Bean', 4, -10, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Salted Caramel Cold Breww', '2024-07-02 23:25:45'),
-(72, 'Oat Milk', 6, -20, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Salted Caramel Cold Breww', '2024-07-02 23:25:45'),
-(73, 'Marshmallows', 13, -10, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 2 Iced White Chocolate mocha', '2024-07-02 23:25:45'),
-(74, 'Caramel', 14, -20, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 2 Iced White Chocolate mocha', '2024-07-02 23:25:46'),
-(75, 'Arrabica Coffee Bean', 4, -20, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 2 Iced White Chocolate mocha', '2024-07-02 23:25:46'),
-(76, 'Arrabica Coffee Bean', 4, -5, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced caffe latte', '2024-07-02 23:25:46'),
-(77, 'Oat Milk', 6, -10, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced caffe latte', '2024-07-02 23:25:46'),
-(78, 'Marshmallows', 13, -30, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 6 Iced White Chocolate mocha', '2024-07-02 23:25:52'),
-(79, 'Caramel', 14, -60, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 6 Iced White Chocolate mocha', '2024-07-02 23:25:52'),
-(80, 'Arrabica Coffee Bean', 4, -60, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 6 Iced White Chocolate mocha', '2024-07-02 23:25:52'),
-(81, 'Caramel', 14, -5, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Salted Caramel Cold Breww', '2024-07-02 23:25:56'),
-(82, 'Arrabica Coffee Bean', 4, -10, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Salted Caramel Cold Breww', '2024-07-02 23:25:56'),
-(83, 'Oat Milk', 6, -20, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Salted Caramel Cold Breww', '2024-07-02 23:25:56'),
-(84, 'Marshmallows', 13, -15, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 3 Iced White Chocolate mocha', '2024-07-02 23:25:57'),
-(85, 'Caramel', 14, -30, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 3 Iced White Chocolate mocha', '2024-07-02 23:25:57'),
-(86, 'Arrabica Coffee Bean', 4, -30, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 3 Iced White Chocolate mocha', '2024-07-02 23:25:57'),
-(87, 'Arrabica Coffee Bean', 4, -5, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced caffe latte', '2024-07-02 23:25:57'),
-(88, 'Oat Milk', 6, -10, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced caffe latte', '2024-07-02 23:25:57'),
-(89, 'Robusta Coffee Bean', 51, 1000, 'grams', 'Initial Supply', 'New Inventory initial supply for Robusta Coffee Bean', '2024-07-03 00:19:27'),
-(121, 'Robusta Coffee Bean', 51, 500, 'grams', 'Adding Supply', 'added supply for Robusta Coffee Bean', '2024-07-03 22:40:25'),
-(122, 'Robusta Coffee Bean', 51, 100, 'grams', 'Adding Supply', 'added supply for Robusta Coffee Bean', '2024-07-03 22:41:56'),
-(124, 'Powdered Sugar', 3, 1000, 'grams', 'Adding Supply', 'added supply for Powdered Sugar', '2024-07-03 22:45:07'),
-(125, 'Arrabica Coffee Bean', 4, 1000, 'grams', 'Adding Supply', 'added supply for Arrabica Coffee Bean', '2024-07-03 22:45:28'),
-(126, 'Liberica Coffee Bean', 5, 1000, 'grams', 'Adding Supply', 'added supply for Liberica Coffee Bean', '2024-07-03 22:48:30'),
-(127, 'Oat Milk', 6, 1000, 'ml', 'Adding Supply', 'added supply for Oat Milk', '2024-07-03 22:48:56'),
-(128, 'Soy Milk', 7, 1000, 'ml', 'Adding Supply', 'added supply for Soy Milk', '2024-07-03 22:49:09'),
-(129, 'Pearls', 8, 1000, 'grams', 'Adding Supply', 'added supply for Pearls', '2024-07-03 22:49:33'),
-(130, 'Nata De Coco', 9, 1000, 'grams', 'Adding Supply', 'added supply for Nata De Coco', '2024-07-03 22:49:45'),
-(131, 'Nata De Coco', 9, 1000, 'grams', 'Adding Supply', 'added supply for Nata De Coco', '2024-07-03 22:49:58'),
-(132, 'Cream', 12, 1000, 'grams', 'Adding Supply', 'added supply for Cream', '2024-07-03 22:50:10'),
-(133, 'Marshmallows', 13, 1000, 'grams', 'Adding Supply', 'added supply for Marshmallows', '2024-07-03 22:50:28'),
-(134, 'Caramel', 14, 1000, 'ml', 'Adding Supply', 'added supply for Caramel', '2024-07-03 22:50:42'),
-(135, 'Matcha', 15, 500, 'grams', 'Adding Supply', 'added supply for Matcha', '2024-07-03 22:51:10'),
-(136, 'Oreo Cookies', 16, 1000, 'grams', 'Adding Supply', 'added supply for Oreo Cookies', '2024-07-03 22:51:33'),
-(137, 'Brown Sugar', 48, 1000, 'grams', 'Adding Supply', 'added supply for Brown Sugar', '2024-07-03 22:51:42'),
-(138, 'Condensed Milk', 50, 1000, 'ml', 'Adding Supply', 'added supply for Condensed Milk', '2024-07-03 22:51:53'),
-(139, 'Caramel', 14, -5, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Salted Caramel Cold Brew', '2024-07-03 22:52:34'),
-(140, 'Arrabica Coffee Bean', 4, -10, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Salted Caramel Cold Brew', '2024-07-03 22:52:34'),
-(141, 'Oat Milk', 6, -20, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Salted Caramel Cold Brew', '2024-07-03 22:52:35'),
-(142, 'Marshmallows', 13, -10, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 2 Iced White Chocolate mocha', '2024-07-03 22:52:35'),
-(143, 'Caramel', 14, -20, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 2 Iced White Chocolate mocha', '2024-07-03 22:52:35'),
-(144, 'Arrabica Coffee Bean', 4, -20, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 2 Iced White Chocolate mocha', '2024-07-03 22:52:36'),
-(145, 'Arrabica Coffee Bean', 4, -5, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced caffe latte', '2024-07-03 22:52:36'),
-(146, 'Oat Milk', 6, -10, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced caffe latte', '2024-07-03 22:52:36'),
-(147, 'Liberica Coffee Bean', 5, -60, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 3 Iced Americano', '2024-07-03 22:52:36'),
-(148, 'Liberica Coffee Bean', 5, -60, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 3 Iced Americano', '2024-07-04 00:00:54'),
-(149, 'Liberica Coffee Bean', 5, -20, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced Americano', '2024-07-04 02:00:57'),
-(150, 'Liberica Coffee Bean', 5, -20, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced Americano', '2024-07-04 02:05:23'),
-(151, 'Arrabica Coffee Bean', 4, -5, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced caffe latte', '2024-07-04 02:06:37'),
-(152, 'Oat Milk', 6, -10, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced caffe latte', '2024-07-04 02:06:37'),
-(153, 'Liberica Coffee Bean', 5, -20, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced Americano', '2024-07-04 14:44:10'),
-(154, 'Caramel', 14, -10, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 2 Salted Caramel Cold Brew', '2024-07-04 14:58:29'),
-(155, 'Arrabica Coffee Bean', 4, -20, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 2 Salted Caramel Cold Brew', '2024-07-04 14:58:29'),
-(156, 'Oat Milk', 6, -40, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 2 Salted Caramel Cold Brew', '2024-07-04 14:58:30'),
-(157, 'Robusta Coffee Bean', 51, -40, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 2 Sagada Coffee', '2024-07-04 15:24:53'),
-(158, 'Robusta Coffee Bean', 51, -20, 'grams', 'Inventory Shrinkage', 'natapon', '2024-07-06 00:17:12'),
-(159, 'Cream', 12, -5, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Vanilla Cream Frappe', '2024-07-06 19:11:20'),
-(160, 'Liberica Coffee Bean', 5, -10, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Vanilla Cream Frappe', '2024-07-06 19:11:21'),
-(161, 'Soy Milk', 7, -15, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Vanilla Cream Frappe', '2024-07-06 19:11:21'),
-(162, 'Arrabica Coffee Bean', 4, -10, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced Special Cappuccinoo', '2024-07-06 19:11:21'),
-(163, 'Caramel', 14, -12, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced Special Cappuccinoo', '2024-07-06 19:11:21'),
-(164, 'Oat Milk', 6, -20, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced Special Cappuccinoo', '2024-07-06 19:11:21'),
-(165, 'Soy Milk', 7, -20, 'ml', 'Inventory Shrinkage', 'accidental spillage', '2024-07-08 21:23:52'),
-(166, 'Caramel', 14, -5, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Salted Caramel Cold Brew', '2024-07-08 22:01:11'),
-(167, 'Arrabica Coffee Bean', 4, -10, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Salted Caramel Cold Brew', '2024-07-08 22:01:11'),
-(168, 'Oat Milk', 6, -20, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Salted Caramel Cold Brew', '2024-07-08 22:01:12'),
-(169, 'Liberica Coffee Bean', 5, 1000, 'grams', 'Adding Supply', 'added supply for Liberica Coffee Bean', '2024-07-10 17:14:12'),
-(170, 'Matcha', 15, 1000, 'grams', 'Adding Supply', 'added supply for Matcha', '2024-07-10 17:23:29'),
-(171, 'Robusta Coffee Bean', 51, -20, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Sagada Coffee', '2024-07-10 17:48:07');
+INSERT INTO `tblinventoryreport` (`inventory_report_id`, `inventory_item`, `inventory_id`, `quantity`, `unit`, `record_type`, `reason`, `datetime`, `employee_id`) VALUES
+(181, 'Robusta Coffee Bean', 51, -40, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 2 Sagada Coffee', '2024-07-12 16:04:26', 34),
+(182, 'Matcha', 15, -5, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Espresso Machiato', '2024-07-12 16:04:29', 34),
+(183, 'Marshmallows', 13, -5, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced White Chocolate mocha', '2024-07-12 16:04:29', 34),
+(184, 'Caramel', 14, -10, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced White Chocolate mocha', '2024-07-12 16:04:29', 34),
+(185, 'Marshmallows', 13, -5, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced White Chocolate mocha', '2024-07-12 16:04:32', 34),
+(186, 'Caramel', 14, -10, 'ml', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Iced White Chocolate mocha', '2024-07-12 16:04:32', 34),
+(187, 'Matcha', 15, -5, 'grams', 'Product Preparation Deduct', 'inventory deduct for preparing 1 Espresso Machiato', '2024-07-12 16:04:35', 34);
 
 -- --------------------------------------------------------
 
@@ -463,7 +396,14 @@ INSERT INTO `tblorderitem` (`orderitem_id`, `quantity`, `status`, `date_time`, `
 (117, 1, 'ended', '2024-07-08 21:38:02', 101, 17, 34),
 (118, 1, 'ended', '2024-07-08 21:38:02', 101, 21, 34),
 (119, 1, 'completed', '2024-07-08 21:56:27', 102, 7, 34),
-(120, 1, 'completed', '2024-07-10 17:47:50', 101, 77, 34);
+(120, 1, 'completed', '2024-07-10 17:47:50', 101, 77, 34),
+(121, 1, 'ended', '2024-07-11 23:42:01', 103, 77, 34),
+(122, 1, 'completed', '2024-07-12 16:03:32', 102, 15, 34),
+(123, 2, 'completed', '2024-07-12 16:03:40', 104, 77, 66),
+(124, 1, 'completed', '2024-07-12 16:03:49', 103, 16, 66),
+(125, 1, 'completed', '2024-07-12 16:03:49', 103, 15, 66),
+(126, 1, 'completed', '2024-07-12 16:03:57', 101, 16, 34),
+(127, 1, 'active', '2024-07-12 18:01:18', 105, 16, 34);
 
 -- --------------------------------------------------------
 
@@ -533,7 +473,17 @@ INSERT INTO `tblorders` (`order_id`, `order_type`, `order_datetime`, `quantity`,
 (279, 'take-out', '2024-07-08 21:38:01', 1, 17, 34, 101, 'payed', NULL, NULL),
 (280, 'take-out', '2024-07-08 21:38:01', 1, 21, 34, 101, 'payed', NULL, NULL),
 (281, 'take-out', '2024-07-08 21:51:17', 1, 7, 34, 102, 'payed', NULL, 0),
-(282, 'take-out', '2024-07-10 17:47:50', 1, 77, 34, 101, 'payed', NULL, NULL);
+(282, 'take-out', '2024-07-10 17:47:50', 1, 77, 34, 101, 'payed', NULL, NULL),
+(283, 'take-out', '2024-07-11 23:29:49', 1, 15, 34, 101, 'canceled', NULL, 0),
+(284, 'take-out', '2024-07-11 23:31:06', 1, 16, 34, 102, 'canceled', NULL, 0),
+(285, 'take-out', '2024-07-11 23:42:01', 1, 77, 34, 103, 'payed', NULL, NULL),
+(286, 'take-out', '2024-07-12 00:07:01', 1, 16, 34, 101, 'payed', NULL, 0),
+(287, 'take-out', '2024-07-12 00:08:44', 1, 15, 34, 102, 'payed', '450488498_2110511382668721_1148435884013927544_n.jpg', 0),
+(288, 'take-out', '2024-07-12 16:01:54', 1, 16, 66, 103, 'payed', NULL, 0),
+(289, 'take-out', '2024-07-12 16:01:54', 1, 15, 66, 103, 'payed', NULL, 0),
+(290, 'take-out', '2024-07-12 16:02:21', 2, 77, 66, 104, 'payed', '449448853_1650418262166229_4143653410016719871_n.jpg', 0),
+(291, 'take-out', '2024-07-12 18:01:18', 1, 16, 34, 105, 'payed', NULL, NULL),
+(292, 'take-out', '2024-07-12 18:01:39', 1, 15, 34, 106, 'notpayed', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -548,39 +498,20 @@ CREATE TABLE `tblpayment` (
   `paymenttype` varchar(50) NOT NULL,
   `customerid` int(11) DEFAULT NULL,
   `orderNumber` int(11) DEFAULT NULL,
-  `reference_no` varchar(255) DEFAULT NULL
+  `reference_no` varchar(255) DEFAULT NULL,
+  `employee_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tblpayment`
 --
 
-INSERT INTO `tblpayment` (`paymentID`, `order_datetime`, `amountpayed`, `paymenttype`, `customerid`, `orderNumber`, `reference_no`) VALUES
-(241, '2024-07-02 01:28:21', 390.00, 'online', 34, 105, '54er6t78yhj'),
-(242, '2024-07-02 01:32:31', 330.00, 'online', 34, 102, 'asdasd341'),
-(243, '2024-07-02 01:32:41', 1200.00, 'cash', 34, 104, NULL),
-(244, '2024-07-02 01:40:22', 590.00, 'cash', 34, 107, NULL),
-(245, '2024-07-02 01:40:37', 130.00, 'online', 34, 108, 'ygg768o9j0'),
-(246, '2024-07-02 01:40:55', 860.00, 'cash', 34, 109, NULL),
-(247, '2024-07-02 01:41:15', 460.00, 'online', 34, 110, '456789'),
-(248, '2024-07-03 21:40:03', 300.00, 'cash', 34, 101, NULL),
-(249, '2024-07-04 01:18:02', 100.00, 'cash', 34, 101, NULL),
-(251, '2024-07-04 01:21:09', 200.00, 'online', 34, 102, '6f7g8uji'),
-(252, '2024-07-04 01:25:15', 100.00, 'online', 34, 103, 'f6tgyhuj'),
-(253, '2024-07-04 01:27:26', 130.00, 'online', 34, 104, '0987654'),
-(257, '2024-07-04 01:53:29', 130.00, 'cash', 34, 105, NULL),
-(259, '2024-07-04 01:55:57', 130.00, 'cash', 34, 106, NULL),
-(260, '2024-07-04 14:41:40', 100.00, 'online', 34, 107, '3d54fg68ju'),
-(261, '2024-07-04 14:58:06', 260.00, 'online', 34, 108, '5d4gt7hyui'),
-(262, '2024-07-04 15:24:25', 300.00, 'online', 34, 109, '43s5ghj'),
-(263, '2024-07-04 19:53:23', 300.00, 'cash', 34, 110, NULL),
-(264, '2024-07-05 16:16:28', 90.00, 'cash', 34, 101, NULL),
-(265, '2024-07-05 16:26:48', 117.00, 'cash', 34, 102, NULL),
-(266, '2024-07-06 15:28:48', 130.00, 'cash', 34, 101, NULL),
-(267, '2024-07-06 19:11:05', 330.00, 'online', 68, 104, 'dfgyun'),
-(268, '2024-07-08 21:38:01', 460.00, 'cash', 34, 101, NULL),
-(269, '2024-07-08 21:56:26', 130.00, 'cash', 34, 102, NULL),
-(270, '2024-07-10 17:47:50', 75.00, 'cash', 34, 101, NULL);
+INSERT INTO `tblpayment` (`paymentID`, `order_datetime`, `amountpayed`, `paymenttype`, `customerid`, `orderNumber`, `reference_no`, `employee_id`) VALUES
+(272, '2024-07-12 16:03:32', 200.00, 'online', 34, 102, '34rewr332', 34),
+(273, '2024-07-12 16:03:40', 300.00, 'online', 66, 104, 'gsdf24523f', 34),
+(274, '2024-07-12 16:03:49', 400.00, 'cash', 66, 103, NULL, 34),
+(275, '2024-07-12 16:03:57', 200.00, 'online', 34, 101, '12532r4tfwf4', 34),
+(276, '2024-07-12 18:01:18', 200.00, 'cash', 34, 105, NULL, 34);
 
 -- --------------------------------------------------------
 
@@ -604,14 +535,14 @@ CREATE TABLE `tblproducts` (
 --
 
 INSERT INTO `tblproducts` (`product_id`, `product_name`, `product_description`, `price`, `image`, `SKU`, `status`, `category`) VALUES
-(7, 'Salted Caramel Cold Brew', 'a salted caramel coffee that is brewed colddss', 130.00, 'stock-of-mix-a-cup-coffee-latte-more-motive-top-view-foodgraphy-generative-ai-photo.jpg', 45, 'Available', 'brewed'),
-(10, 'Vanilla Cream Frappe', 'A coffee that is frapped with vanilla cream', 200.00, 'coffee-3727673_640.jpg', 64, 'Available', 'frappe'),
-(11, 'Iced Americano', 'A coffee that is americanized with ice', 100.00, 'stock-of-mix-a-cup-coffee-latte-more-motive-top-view-foodgraphy-generative-ai-photo.jpg', 96, 'Available', 'frappe'),
-(15, 'Iced White Chocolate mocha', 'A white chocolate flavored coffee with ice and mocha', 200.00, 'coffee-3727673_640.jpg', 95, 'Available', 'espresso'),
-(16, 'Espresso Machiato', 'A expressed coffee with macchiato', 200.00, 'stock-of-mix-a-cup-coffee-latte-more-motive-top-view-foodgraphy-generative-ai-photo.jpg', 95, 'Available', 'espresso'),
-(17, 'Iced caffe latte', 'a coffee with ice and latted', 130.00, 'coffee-3727673_640.jpg', 91, 'Available', 'latte'),
-(21, 'Iced Special Cappuccinoo', 'a coffee with ice and cappucinized but its special', 130.00, 'stock-of-mix-a-cup-coffee-latte-more-motive-top-view-foodgraphy-generative-ai-photo.jpg', 45, 'Available', 'cappuccino'),
-(77, 'Sagada Coffee', 'coffee made in sagada', 150.00, 'stock-of-mix-a-cup-coffee-latte-more-motive-top-view-foodgraphy-generative-ai-photo.jpg', 71, 'Available', 'americano');
+(7, 'Salted Caramel Cold Brew', 'a salted caramel coffee that is brewed colddss', 130.00, 'stock-of-mix-a-cup-coffee-latte-more-motive-top-view-foodgraphy-generative-ai-photo.jpg', 0, NULL, 'brewed'),
+(10, 'Vanilla Cream Frappe', 'A coffee that is frapped with vanilla cream', 200.00, 'coffee-3727673_640.jpg', 0, NULL, 'frappe'),
+(11, 'Iced Americano', 'A coffee that is americanized with ice', 100.00, 'stock-of-mix-a-cup-coffee-latte-more-motive-top-view-foodgraphy-generative-ai-photo.jpg', 0, NULL, 'frappe'),
+(15, 'Iced White Chocolate mocha', 'A white chocolate flavored coffee with ice and mocha', 200.00, 'coffee-3727673_640.jpg', 145, 'Available', 'espresso'),
+(16, 'Espresso Machiato', 'A expressed coffee with macchiato', 200.00, 'stock-of-mix-a-cup-coffee-latte-more-motive-top-view-foodgraphy-generative-ai-photo.jpg', 298, 'Available', 'espresso'),
+(17, 'Iced caffe latte', 'a coffee with ice and latted', 130.00, 'coffee-3727673_640.jpg', 0, NULL, 'latte'),
+(21, 'Iced Special Cappuccinoo', 'a coffee with ice and cappucinized but its special', 130.00, 'stock-of-mix-a-cup-coffee-latte-more-motive-top-view-foodgraphy-generative-ai-photo.jpg', 0, NULL, 'cappuccino'),
+(77, 'Sagada Coffee', 'coffee made in sagada', 150.00, 'stock-of-mix-a-cup-coffee-latte-more-motive-top-view-foodgraphy-generative-ai-photo.jpg', 67, 'Available', 'americano');
 
 -- --------------------------------------------------------
 
@@ -631,23 +562,9 @@ CREATE TABLE `tblproducts_inventory` (
 --
 
 INSERT INTO `tblproducts_inventory` (`productsInventory_id`, `products_id`, `inventory_id`, `quantity`) VALUES
-(146, 17, 4, 5),
-(147, 17, 6, 10),
-(148, 7, 14, 5),
-(149, 7, 4, 10),
-(150, 7, 6, 20),
-(151, 10, 12, 5),
-(152, 10, 5, 10),
-(153, 10, 7, 15),
-(154, 11, 5, 20),
 (155, 15, 13, 5),
 (156, 15, 14, 10),
-(157, 15, 4, 10),
-(158, 16, 4, 10),
 (159, 16, 15, 5),
-(163, 21, 4, 10),
-(164, 21, 14, 12),
-(165, 21, 6, 20),
 (169, 77, 51, 20);
 
 -- --------------------------------------------------------
@@ -957,7 +874,7 @@ ALTER TABLE `tblemployees`
 -- AUTO_INCREMENT for table `tblfeedback`
 --
 ALTER TABLE `tblfeedback`
-  MODIFY `feedbackid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `feedbackid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `tblinventory`
@@ -969,31 +886,31 @@ ALTER TABLE `tblinventory`
 -- AUTO_INCREMENT for table `tblinventoryitems`
 --
 ALTER TABLE `tblinventoryitems`
-  MODIFY `tblinventoryitems_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `tblinventoryitems_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `tblinventoryreport`
 --
 ALTER TABLE `tblinventoryreport`
-  MODIFY `inventory_report_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=172;
+  MODIFY `inventory_report_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=188;
 
 --
 -- AUTO_INCREMENT for table `tblorderitem`
 --
 ALTER TABLE `tblorderitem`
-  MODIFY `orderitem_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
+  MODIFY `orderitem_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
 
 --
 -- AUTO_INCREMENT for table `tblorders`
 --
 ALTER TABLE `tblorders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=283;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=293;
 
 --
 -- AUTO_INCREMENT for table `tblpayment`
 --
 ALTER TABLE `tblpayment`
-  MODIFY `paymentID` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=271;
+  MODIFY `paymentID` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=277;
 
 --
 -- AUTO_INCREMENT for table `tblproducts`
@@ -1047,6 +964,12 @@ ALTER TABLE `tblcart`
 ALTER TABLE `tblcartitem`
   ADD CONSTRAINT `tblcartitem_ibfk_1` FOREIGN KEY (`productid`) REFERENCES `tblproducts` (`product_id`),
   ADD CONSTRAINT `tblcartitem_ibfk_2` FOREIGN KEY (`cartid`) REFERENCES `tblcart` (`cartID`);
+
+--
+-- Constraints for table `tblcoffeeshop`
+--
+ALTER TABLE `tblcoffeeshop`
+  ADD CONSTRAINT `tblcoffeeshop_ibfk_1` FOREIGN KEY (`employees_id`) REFERENCES `tblemployees` (`employeeID`);
 
 --
 -- Constraints for table `tblfeedback`
