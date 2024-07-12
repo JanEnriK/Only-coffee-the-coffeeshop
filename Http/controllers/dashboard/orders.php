@@ -94,7 +94,7 @@ function removeExpired($pdo)
             $recordType = "Expiration Auto Deduct";
             $quantityNegative = '-' . $data['quantity'];
 
-            $sqlInsertReport = "INSERT INTO tblinventoryreport (inventory_item, inventory_id, quantity, unit, record_type, reason,datetime) VALUES (:inventoryItem, :inventory_id, :quantity, :unit, :record_type, :reason,:datetime)";
+            $sqlInsertReport = "INSERT INTO tblinventoryreport (inventory_item, inventory_id, quantity, unit, record_type, reason,datetime,employee_id) VALUES (:inventoryItem, :inventory_id, :quantity, :unit, :record_type, :reason,:datetime, :employee_id)";
             $statementInsertReport = $pdo->prepare($sqlInsertReport);
             $statementInsertReport->bindParam(':inventoryItem',  $inventoryData['inventory_item']);
             $statementInsertReport->bindParam(':inventory_id', $data['inventory_id']);
@@ -103,6 +103,7 @@ function removeExpired($pdo)
             $statementInsertReport->bindParam(':reason', $reason);
             $statementInsertReport->bindParam(':record_type', $recordType);
             $statementInsertReport->bindParam(':datetime', $todayInventoryReport);
+            $statementInsertReport->bindParam(':employee_id', $_SESSION['user']['id']);
             $statementInsertReport->execute();
         }
     }
@@ -567,7 +568,7 @@ if (isset($_POST['action'])) {
 
                 // Insert data into tblInventoryReports"
                 $recordType = "Product Preparation Deduct";
-                $sqlInsertReport = "INSERT INTO tblinventoryreport (inventory_item, inventory_id, quantity, unit, record_type, reason,datetime) VALUES (:inventoryItem, :itemID, :quantityString, :unit, :record_type, :reason,:datetime)";
+                $sqlInsertReport = "INSERT INTO tblinventoryreport (inventory_item, inventory_id, quantity, unit, record_type, reason,datetime, employee_id) VALUES (:inventoryItem, :itemID, :quantityString, :unit, :record_type, :reason, :datetime, :employee_id)";
                 $statementInsertReport = $pdo->prepare($sqlInsertReport);
                 $statementInsertReport->bindParam(':inventoryItem', $fetchInventory['inventory_item']);
                 $statementInsertReport->bindParam(':itemID', $deduct['inventory_id']);
@@ -576,6 +577,7 @@ if (isset($_POST['action'])) {
                 $statementInsertReport->bindParam(':record_type', $recordType);
                 $statementInsertReport->bindParam(':reason', $reason);
                 $statementInsertReport->bindParam(':datetime', $todayInventoryReport);
+                $statementInsertReport->bindParam(':employee_id', $_SESSION['user']['id']);
                 $statementInsertReport->execute();
             }
 

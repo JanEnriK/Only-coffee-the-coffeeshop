@@ -32,13 +32,15 @@ require "partials/nav.php";
 
 <?php
 if (isset($_SESSION['orderSubmited']['ordernumber'])) {
+  $dateToday = new DateTime('now', new DateTimeZone('Asia/Manila'));
+  $dateToday = $dateToday->format('M-d-y');
   // Output the JavaScript code to display the SweetAlert notification
   echo '
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
   document.addEventListener("DOMContentLoaded", function() {
       Swal.fire({
-          title: "Order ' . $_SESSION['orderSubmited']['ordernumber'] . ' Transaction Complete!",
+          title: "Order ' . strtoupper($dateToday) . '-' . $_SESSION['orderSubmited']['ordernumber'] . ' Transaction Complete!",
           icon: "success",
           confirmButtonText: "OK"
       });
@@ -166,8 +168,15 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1/jquery.min.js"></script>
 <script>
-  //printing invoice
+  function formatDate(date) {
+    const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = months[date.getMonth()];
+    const year = String(date.getFullYear()).slice(-2);
+    return `${month}-${day}-${year}`;
+  }
 
+  //printing invoice
   function downloadPDF(containerId) {
     var container = document.getElementById(containerId);
     if (container) {
@@ -197,10 +206,22 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
       $(contentToPrint).find('.btn,.btn-block').remove();
       $(contentToPrint).find('#payment_details').remove();
 
+      const options = {
+        timeZone: 'Asia/Manila',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      };
+      let orderDate = new Date(new Date().toLocaleString('en-US', options));
+      orderDate = formatDate(orderDate);
+
       // Dynamically insert the extracted values into the contentToPrint
       // Create new elements to display the values outside of the original input elements
       var orderNumberDisplay = document.createElement('p');
-      orderNumberDisplay.textContent = `Order Number: ${orderNumber}`;
+      orderNumberDisplay.textContent = `Order Number: ${orderDate}-${orderNumber}`;
       contentToPrint.insertBefore(orderNumberDisplay, contentToPrint.firstChild);
 
 

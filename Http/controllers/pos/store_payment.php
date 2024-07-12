@@ -21,13 +21,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $orderNumber = $_POST['orderNumber'];
             $paymentOnline = $_POST['inputReferenceNumber'];
             // Insert the payment details into the database (ONLINE)
-            $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber, reference_no, order_datetime) VALUES(:total_amount, :payment_type, :customer_id, :order_number,:reference_no, :order_datetime)", [
+            $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber, reference_no, order_datetime, employee_id) VALUES(:total_amount, :payment_type, :customer_id, :order_number,:reference_no, :order_datetime, :employee_id)", [
                 'total_amount' => $totalAmount,
                 'payment_type' => "online",
                 'customer_id' => $customerId,
                 'order_number' => $orderNumber,
                 'reference_no' => $paymentOnline,
                 'order_datetime' => $today,
+                'employee_id' => $_SESSION['user']['id'],
             ]);
             //update status of the order
             $db->query("UPDATE `tblorders` SET `order_status` = 'payed' WHERE order_number = ?  AND order_status = 'pending'", [$orderNumber]);
@@ -74,12 +75,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Check which payment method was selected
         if (!empty($paymentCash)) {
             // Insert the payment details into the database (CASH)
-            $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber, order_datetime) VALUES(:total_amount, :payment_type, :customer_id, :order_number, :order_datetime)", [
+            $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber, order_datetime,employee_id) VALUES(:total_amount, :payment_type, :customer_id, :order_number, :order_datetime,:employee_id)", [
                 'total_amount' => $totalAmount,
                 'payment_type' => "cash",
                 'customer_id' => $customerId,
                 'order_number' => $orderNumber,
                 'order_datetime' => $today,
+                'employee_id' => $_SESSION['user']['id'],
             ]);
             //update status of the order
             $db->query("UPDATE `tblorders` SET `order_status` = 'payed' WHERE order_number = ?  AND order_status = 'notpayed'", [$orderNumber]);
@@ -106,13 +108,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         } elseif (!empty($paymentOnline)) {
             // Insert the payment details into the database (ONLINE)
-            $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber, reference_no, order_datetime) VALUES(:total_amount, :payment_type, :customer_id, :order_number,:reference_no, :order_datetime)", [
+            $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber, reference_no, order_datetime, employee_id) VALUES(:total_amount, :payment_type, :customer_id, :order_number,:reference_no, :order_datetime, :employee_id)", [
                 'total_amount' => $totalAmount,
                 'payment_type' => "online",
                 'customer_id' => $customerId,
                 'order_number' => $orderNumber,
                 'reference_no' => $paymentOnline,
                 'order_datetime' => $today,
+                'employee_id' => $_SESSION['user']['id'],
             ]);
             //update status of the order
             $db->query("UPDATE `tblorders` SET `order_status` = 'payed' WHERE order_number = ?  AND order_status = 'notpayed'", [$orderNumber]);

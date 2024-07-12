@@ -73,12 +73,13 @@ for ($i = 0; $i < count($productIds); $i++) {
 
 if ($paymentMethod === "cash") {
     // Insert the payment details into the database (CASH)
-    $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber,order_datetime) VALUES(:total_amount, :payment_type, :customer_id, :order_number,:order_datetime)", [
+    $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber,order_datetime,employee_id) VALUES(:total_amount, :payment_type, :customer_id, :order_number,:order_datetime, :employee_id)", [
         'total_amount' => $totalAmount,
         'payment_type' => "cash",
         'customer_id' => $employeeID,
         'order_number' => $order_number,
         'order_datetime' => $today,
+        'employee_id' => $_SESSION['user']['id'],
     ]);
 
     date_default_timezone_set('Asia/Manila');
@@ -99,13 +100,14 @@ if ($paymentMethod === "cash") {
     }
 } else {
     // Insert the payment details into the database (ONLINE)
-    $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber,reference_no, order_datetime) VALUES(:total_amount, :payment_type, :customer_id, :order_number, :reference_no, :order_datetime)", [
+    $db->query("INSERT INTO tblpayment(amountpayed, paymenttype, customerid, orderNumber,reference_no, order_datetime,employee_id) VALUES(:total_amount, :payment_type, :customer_id, :order_number, :reference_no, :order_datetime,:employee_id)", [
         'total_amount' => $totalAmount,
         'payment_type' => "online",
         'customer_id' => $employeeID,
         'order_number' => $order_number,
         'reference_no' => $paymentOnline,
         'order_datetime' => $today,
+        'employee_id' => $_SESSION['user']['id'],
     ]);
 
     date_default_timezone_set('Asia/Manila');

@@ -206,7 +206,7 @@ include "connect.php";
                             ?>
                                 <tr>
                                     <td>
-                                        <?= $row['orderid'] ?>
+                                        <?= strtoupper(date('M-d-y', strtotime($row['date_time']))) ?>-<?= $row['orderid'] ?>
                                     </td>
                                     <td>
                                         <?= $username['username'] ?>
@@ -277,7 +277,7 @@ include "connect.php";
                             ?>
                                 <tr>
                                     <td>
-                                        <?= $row['orderid'] ?>
+                                        <?= strtoupper(date('M-d-y', strtotime($row['date_time']))) ?>-<?= $row['orderid'] ?>
                                     </td>
                                     <td>
                                         <?= $username['username'] ?>
@@ -349,7 +349,7 @@ include "connect.php";
                         ?>
                             <tr>
                                 <td>
-                                    <?= $row['orderid'] ?>
+                                    <?= strtoupper(date('M-d-y', strtotime($row['date_time']))) ?>-<?= $row['orderid'] ?>
                                 </td>
                                 <td>
                                     <?= $username['username'] ?>
@@ -390,6 +390,14 @@ include "connect.php";
         modal.style.display = "none";
     }
 
+    function formatDate(date) {
+        const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = months[date.getMonth()];
+        const year = String(date.getFullYear()).slice(-2);
+        return `${month}-${day}-${year}`;
+    }
+
     function view(order_number, order_date, username, item_count, status) {
         // Fetch the order items from the server
         getOrderItemsFromServer(order_number, order_date).then(items => {
@@ -406,7 +414,10 @@ include "connect.php";
             };
             let formatedDate = new Intl.DateTimeFormat('en-US', options).format(dateObj);
 
-            var modalContent = `<h4>Order number: ${order_number}</h4>
+            var orderDate = new Date(order_date);
+            orderDate = formatDate(orderDate);
+
+            var modalContent = `<h4>Order number:${orderDate}-${order_number}</h4>
                                 <h4>Customer Name: ${username}</h4>
                                 <h4>Order Quantity: ${item_count}</h4>
                                 <h4>Status: ${status}</h4>

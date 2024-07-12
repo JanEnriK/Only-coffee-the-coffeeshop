@@ -114,6 +114,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   } else {
     //if paymentmenthod is cash
     $order_number = generateUniqueOrderNumber($db);
+    date_default_timezone_set('Asia/Manila');
+    $today = new DateTime('now', new DateTimeZone('Asia/Manila'));
+    $today = $today->format('Y-m-d H:i:s');
 
     $discountPercent = 0;
     if (isset($_SESSION['discount'])) {

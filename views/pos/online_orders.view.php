@@ -24,6 +24,8 @@
 </style>
 
 <?php
+$dateToday = new DateTime('now', new DateTimeZone('Asia/Manila'));
+$dateToday = $dateToday->format('M-d-y');
 if (isset($_SESSION['orderSubmited']['ordernumber'])) {
   // Output the JavaScript code to display the SweetAlert notification
   echo '
@@ -31,7 +33,7 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
   <script>
   document.addEventListener("DOMContentLoaded", function() {
       Swal.fire({
-          title: "Order ' . $_SESSION['orderSubmited']['ordernumber'] . ' Transaction Complete!",
+          title: "Order ' . strtoupper($dateToday) . '-' . $_SESSION['orderSubmited']['ordernumber'] . ' Transaction Complete!",
           icon: "success",
           confirmButtonText: "OK"
       });
@@ -46,7 +48,7 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
   <script>
   document.addEventListener("DOMContentLoaded", function() {
       Swal.fire({
-          title: "Order ' . $_SESSION['orderDeclined']['ordernumber'] . ' Has been declined.",
+          title: "Order ' . strtoupper($dateToday) . '-' . $_SESSION['orderDeclined']['ordernumber'] . ' Has been declined.",
           icon: "error",
           confirmButtonText: "OK"
       });
@@ -529,11 +531,16 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
             </div>
           <?php else : ?>
             <div class="row">
-              <?php foreach ($pendingOnlineOrders as $index => $order) : ?>
+              <?php
+              foreach ($pendingOnlineOrders as $index => $order) :
+                $orderDate = strtotime($order['order_datetime']);
+                $orderDate = new DateTime('@' . $orderDate);
+                $orderDate = $orderDate->format('M-d-y');
+              ?>
                 <div class="col-md-3 mb-4">
                   <div class="card h-100">
                     <div class="card-body" onclick="handleItemClick('<?= $order['order_number']; ?>', '<?= $order['customer_id']; ?>', '<?= $order['order_status']; ?>')">
-                      <p class="card-text"><strong>Order Number:</strong> <?= $order['order_number']; ?></p>
+                      <p class="card-text"><strong>Order Number:</strong><br><?= strtoupper($orderDate) ?>-<?= $order['order_number']; ?></p>
                       <p class="card-text"><strong>User Name:</strong> <?= $order['username']; ?></p>
                       <p class="card-text"><strong>Order Count:</strong> <?= $order['order_number_count']; ?></p>
                     </div>
@@ -557,11 +564,15 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
             </div>
           <?php else : ?>
             <div class="row">
-              <?php foreach ($online_orders as $index => $order) : ?>
+              <?php foreach ($online_orders as $index => $order) :
+                $orderDate = strtotime($order['order_datetime']);
+                $orderDate = new DateTime('@' . $orderDate);
+                $orderDate = $orderDate->format('M-d-y');
+              ?>
                 <div class="col-md-3 mb-4">
                   <div class="card h-100">
                     <div class="card-body" onclick="handleItemClick('<?= $order['order_number']; ?>', '<?= $order['customer_id']; ?>', '<?= $order['order_status']; ?>')">
-                      <p class="card-text"><strong>Order Number:</strong> <?= $order['order_number']; ?></p>
+                      <p class="card-text"><strong>Order Number:</strong><br><?= strtoupper($orderDate) ?>-<?= $order['order_number']; ?></p>
                       <p class="card-text"><strong>User Name:</strong> <?= $order['username']; ?></p>
                       <p class="card-text"><strong>Order Count:</strong> <?= $order['order_number_count']; ?></p>
                     </div>
@@ -586,6 +597,13 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
+  function formatDate(date) {
+    const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = months[date.getMonth()];
+    const year = String(date.getFullYear()).slice(-2);
+    return `${month}-${day}-${year}`;
+  }
   //show overlay(modal) of that specific order
   function handleItemClick(orderNumber, customerId, status) {
     // Make AJAX request to fetch order details
@@ -603,8 +621,10 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
         const discount = orderDetails.discount;
         const orderStatus = orderDetails.order_status;
 
+        let orderDate = new Date(orderDetails.order_datetime);
+
         // Populate the modal with the order details
-        $('#orderNumberDisplay').text('Order Number: ' + orderDetails.order_number);
+        $('#orderNumberDisplay').text('Order Number: ' + formatDate(orderDate) + '-' + orderDetails.order_number);
         $('#userNameDisplay').text('User Name: ' + orderDetails.username);
         $('#productList').empty(); // Clear existing product rows
 

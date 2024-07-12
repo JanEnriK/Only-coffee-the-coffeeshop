@@ -16,13 +16,16 @@ if (isset($_SESSION['alert_message'])) {
 if (isset($_SESSION['orderSubmited']['ordernumber'])) {
     // Output the order number
     $orderNumber = $_SESSION['orderSubmited']['ordernumber'];
+    $dateToday = new DateTime('now', new DateTimeZone('Asia/Manila'));
+    $dateToday = $dateToday->format('M-d-y');
+
     echo '
         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <script>
             window.onload = function() {
                 Swal.fire({
                     title: "Order Placed!",
-                    text: "Your order number is ' . $orderNumber . '",
+                    text: "Your order number is ' . strtoupper($dateToday) . '-' . $orderNumber . '",
                     icon: "success",
                     confirmButtonText: "OK"
                 });
@@ -544,6 +547,14 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
         fetchOrderHistory();
     });
 
+    function formatDate(date) {
+        const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = months[date.getMonth()];
+        const year = String(date.getFullYear()).slice(-2);
+        return `${month}-${day}-${year}`;
+    }
+
     function fetchOrderHistory() {
         fetch('fetch_history.php')
             .then(response => {
@@ -557,6 +568,7 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
                 let html = data.map(order => {
                     // Convert the order datetime to a Date object
                     let orderDate = new Date(order.order_datetime);
+                    let orderNumberDate = formatDate(orderDate)
                     // Format the date
                     let formattedDate = orderDate.toLocaleString('en-US', {
                         weekday: 'long', // Monday
@@ -574,7 +586,7 @@ if (isset($_SESSION['orderSubmited']['ordernumber'])) {
                                 <div class="card mb-3 rounded">
                                     <div class="card-body bg-white" id="card_${order.order_number}">
                                         <span class="d-flex justify-content-between">
-                                        <h5 class="card-title pl-lg-2">Order Number: ${order.order_number}</h5>
+                                        <h5 class="card-title pl-lg-2">Order Number: ${orderNumberDate}-${order.order_number}</h5>
                                         <h5 class="card-title pl-lg-2 pr-lg-2">No. of Items: ${order.record_count}</h5></span>
                                         <h6 class="card-title pl-lg-2"><b>Date Ordered:</b> ${formattedDate}</h6>
                                         <div id="${fullId}" style="display:none;"></div>

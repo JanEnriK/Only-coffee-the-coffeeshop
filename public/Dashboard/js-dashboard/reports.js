@@ -14,6 +14,9 @@ function showReport(reportType) {
     $("#inventoryReportContainer").hide();
     $("#feedbackReportContainer").hide();
     $("#userlogsReportContainer").hide();
+
+    // $("#paymentTypeFilter").hide();
+    // $("#dateFilter").hide();
   } else if (reportType === 'inventory') {
     // Toggle visibility of inventory report container
     isInventoryTableVisible = !isInventoryTableVisible;
@@ -51,8 +54,19 @@ function showReport(reportType) {
 function searchSales() {//for sales report
   var startDate = $("#startDateSales").val();
   var endDate = $("#endDateSales").val();
+  var filterValue = $("#paymentTypeSelector").val();
 
-  fetchDataAndDisplay('sales', "", startDate, endDate);
+  fetchDataAndDisplay('sales', filterValue, startDate, endDate, '');
+}
+
+function searchInv(){
+  var startDate = $("#startDateInv").val();
+  var endDate = $("#endDateInv").val();
+  var filterValue = $("#quantityFilterInventory").val();
+
+  var recordType = $("#recordTypeSelector").val();
+
+  fetchDataAndDisplay('inventory', filterValue, startDate, endDate, recordType);
 }
 
 function filterTable(reportType) {//for inventory report
@@ -67,16 +81,20 @@ function filterTable(reportType) {//for inventory report
   } else if (reportType === 'userlogs'){
     var userlogsStartDate = $("#startDateUserlog").val();
     var userlogsEndDate = $("#endDateUserlog").val();
+  }else if(reportType === 'sales'){
+    filterId = 'paymentTypeSelector';
   }
 
   var filterValue = $("#" + filterId).val();
 
   if (reportType === 'inventory') {
-    fetchDataAndDisplay(reportType, filterValue, "", "");
+    fetchDataAndDisplay(reportType, filterValue, "", "",'');
   } else if (reportType === 'feedback'){
-    fetchDataAndDisplay(reportType, "", feedbackStartDate , feedbackEndDate);
+    fetchDataAndDisplay(reportType, "", feedbackStartDate , feedbackEndDate, '');
   } else if (reportType === 'userlogs'){
-    fetchDataAndDisplay(reportType, "", userlogsStartDate, userlogsEndDate);
+    fetchDataAndDisplay(reportType, "", userlogsStartDate, userlogsEndDate,'');
+  }else if (reportType === 'sales'){
+    fetchDataAndDisplay(reportType, filterValue, '', '','');
   }
   
 }
@@ -86,40 +104,82 @@ function filterTable(reportType) {//for inventory report
 
 function displayInventoryReport(data) {
   $("#inventoryTableBody").empty();
+  if(data.length >= 1){
+    for (var i = 0; i < data.length; i++) {
+        var row = "<tr>";
+        // row += "<td>" + data[i].inventory_report_id + "</td>";
+        row += "<td>" + data[i].inventory_item + "</td>";
+        row += "<td>" + data[i].quantity +" "+data[i].unit+"</td>";
+        row += "<td>" + data[i].reason + "</td>";
+        row += "<td>" + data[i].record_type + "</td>";
 
-  for (var i = 0; i < data.length; i++) {
+        var options = { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric', 
+          hour: 'numeric', 
+          minute: 'numeric', 
+          hour12: true 
+        };
+        var date = new Date(data[i].datetime);
+        var formattedDate = date.toLocaleString('en-US', options);
+        row += "<td>" + formattedDate + "</td>";
+        row += "<td>" + data[i].username + "</td>";
+        
+        row += "</tr>";
+
+        $("#inventoryTableBody").append(row);
+      }
+  }else{
     var row = "<tr>";
-    row += "<td>" + data[i].inventory_report_id + "</td>";
-    row += "<td>" + data[i].inventory_item + "</td>";
-    row += "<td>" + data[i].quantity + "</td>";
-    row += "<td>" + data[i].unit + "</td>";
-    row += "<td>" + data[i].record_type + "</td>";
-    row += "<td>" + data[i].reason + "</td>";
-    row += "<td>" + data[i].datetime + "</td>";
+    row += "<td colspan='6' style='text-align: center;'> NO RECORDS FOUND</td>";
     row += "</tr>";
 
     $("#inventoryTableBody").append(row);
+    
   }
+  
 }
 
 function displayFeedbackReport(data) {
   $("#tableBodyFeedback").empty();
 
-  for (var i = 0; i < data.length; i++) {
+  if(data.length >= 1){
+    for (var i = 0; i < data.length; i++) {
+        var row = "<tr>";
+        // row += "<td>" + data[i].feedbackid + "</td>";
+        row += "<td>" + data[i].username + "</td>";
+        row += "<td>" + data[i].title + "</td>";
+
+        var fullDescription = data[i].feedback_desc;
+        var truncatedDescription = truncateDescription(fullDescription, 100);
+        row += "<td class='feedback-description' data-full-description='" + escapeHtml(fullDescription) + "'>" + truncatedDescription + "</td>";
+        
+        var options = { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric', 
+          hour: 'numeric', 
+          minute: 'numeric', 
+          hour12: true 
+        };
+        var date = new Date(data[i].feedback_datetime);
+        var formattedDate = date.toLocaleString('en-US', options);
+        row += "<td>" + formattedDate + "</td>";
+
+        // row += "<td>" + data[i].customerid + "</td>";
+        row += "</tr>";
+
+        $("#tableBodyFeedback").append(row);
+      }
+  }else{
     var row = "<tr>";
-    row += "<td>" + data[i].feedbackid + "</td>";
-    row += "<td>" + data[i].title + "</td>";
-
-    var fullDescription = data[i].feedback_desc;
-    var truncatedDescription = truncateDescription(fullDescription, 100);
-
-    row += "<td class='feedback-description' data-full-description='" + escapeHtml(fullDescription) + "'>" + truncatedDescription + "</td>";
-    row += "<td>" + data[i].feedback_datetime + "</td>";
-    row += "<td>" + data[i].customerid + "</td>";
+    row += "<td colspan='4' style='text-align: center;'> NO RECORDS FOUND</td>";
     row += "</tr>";
 
     $("#tableBodyFeedback").append(row);
   }
+  
 }
 
 function displayUserlogsReport(data) {
@@ -191,12 +251,15 @@ function escapeHtml(text) {
 }
 
 
-function fetchDataAndDisplay(reportType, filterValue, fetchedStartDate, fetchedEndDate) {
+function fetchDataAndDisplay(reportType, filterValue, fetchedStartDate, fetchedEndDate, recordType) {
   var url;
 
   if (reportType === 'sales') {
     url = 'reports?get_sales_data';
 
+    if (filterValue) {
+      url += '&filterValue=' + filterValue;
+    }
     if (fetchedStartDate && fetchedEndDate) {
       url += '&startDate=' + fetchedStartDate + '&endDate=' + fetchedEndDate;
     }
@@ -205,6 +268,13 @@ function fetchDataAndDisplay(reportType, filterValue, fetchedStartDate, fetchedE
     if(filterValue){
       url += '&filterValue=' + filterValue;
     }
+    if(recordType){
+      url += '&recordType=' + recordType;
+    }
+    if (fetchedStartDate && fetchedEndDate) {
+      url += '&startDate=' + fetchedStartDate + '&endDate=' + fetchedEndDate;
+    }
+
   } else if (reportType === 'feedback') {
     url = 'reports?get_feedback_data';
     if (fetchedStartDate && fetchedEndDate) {
@@ -240,33 +310,55 @@ function fetchDataAndDisplay(reportType, filterValue, fetchedStartDate, fetchedE
 function displaySalesReport(data) {
   $("#tableBodySales").empty();
   console.log(data);
-  
-  // Sort data based on payment type
-  // data.sort(function(a, b) {
-  //   var paymentTypeA = a.paymenttype.toUpperCase(); 
-  //   var paymentTypeB = b.paymenttype.toUpperCase(); 
-  //   if (paymentTypeA < paymentTypeB) {
-  //     return -1;
-  //   } else if (paymentTypeA > paymentTypeB) {
-  //     return 1;
-  //   } else {
-  //     return 0;
-  //   }
-  // });
 
-  // Iterate through sorted data and append rows to the table
-  for (var i = 0; i < data.length; i++) {
-    var row = "<tr>";
-    row += "<td>" + data[i].paymentID + "</td>";
-    row += "<td>" + data[i].order_datetime + "</td>";
-    row += "<td>" + data[i].amountpayed + "</td>";
-    row += "<td>" + data[i].paymenttype + "</td>";
-    row += "<td>" + data[i].reference_no + "</td>";
-    row += "<td>" + data[i].customerid + "</td>";
-    // row += "<td>" + data[i].orderid + "</td>";
-    row += "</tr>";
+  if(data.length >= 1){
+    for (var i = 0; i < data.length; i++) {
+        var row = "<tr>";
+        row += "<td>" + data[i].cust_username + "</td>";
 
-    $("#tableBodySales").append(row);
+        var options = { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric', 
+          hour: 'numeric', 
+          minute: 'numeric', 
+          hour12: true 
+        };
+        var date = new Date(data[i].order_datetime);
+            var formattedDate = date.toLocaleString('en-US', options);
+        row += "<td>" + formattedDate + "</td>";
+        
+        row += "<td>" + data[i].amountpayed + "</td>";
+        row += "<td>" + data[i].paymenttype + "</td>";
+        
+        if(data[i].reference_no === null){
+          row += "<td> No reference number for cash payments </td>";
+        }else{
+          row += "<td>" + data[i].reference_no + "</td>";
+        
+        }
+
+        row += "<td>" + formatDate(data[i].order_datetime) +"-"+ data[i].orderNumber + "</td>";
+        row += "<td>" + data[i].emp_username + "</td>";
+        
+        row += "</tr>";
+
+        $("#tableBodySales").append(row);
+      }
+  } else {
+      var row = "<tr>";
+      row += "<td colspan='7' style='text-align: center;'> NO RECORDS FOUND</td>";
+      row += "</tr>";
+
+      $("#tableBodySales").append(row);
   }
+  
 }
 
+
+function formatDate(dateString) {
+  var date = new Date(dateString);
+  var options = { year: '2-digit', month: 'short', day: '2-digit' };
+  var formattedDate = date.toLocaleDateString('en-US', options).toUpperCase().replace(/ /g, '-').replace(',', '');
+  return formattedDate;
+}
